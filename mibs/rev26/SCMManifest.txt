@@ -1,0 +1,38 @@
+NOTE: Set tab stops to 4 for proper viewing of this file.
+
+Manifest
+--------
+
+Location Covered:       (MIB Area) //Liebert/MIB/Published/REL_007
+Branch or Directory:    Directory
+Administrator:          MIB Change Control Board - Liebert Monitoring Group
+
+
+Scope
+-----
+
+This manifest covers the above referenced directory only.
+
+
+History
+-------
+
+MIB's in this directory have been created using the LiebertMibCompiler.ksh
+script (reference //Liebert/MIB/MasterDocuments).
+ 
+These MIB documents were created from the master documents contained in
+label MIB_LGP_REL_007.
+
+These MIB documents were released to the public under the following release:
+
+	Release Date: ??/??/????
+	ECN: E104918
+	PartNum: 166769R5 - Unix tar file format
+	PartNum: 166770R5 - Windows zip file format
+
+Contents
+--------
+
+Contains public released MIB documents for the Liebert Global Products MIB
+tree as of the above reference release date.
+

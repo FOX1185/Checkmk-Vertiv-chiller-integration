@@ -4,7 +4,7 @@ Scrive anche <dir_mib>/oidmap.json (OID -> nome simbolico)."""
 import re,sys,glob,os
 mibdir,upl=sys.argv[1],sys.argv[2]
 defs={}
-for f in glob.glob(mibdir+'/LIEBERT-*'):
+for f in glob.glob(mibdir+'/LIEBERT*'):
     t=open(f,errors='replace').read()
     t=re.sub(r'--[^\n]*','',t)
     for m in re.finditer(r'(\w[\w-]*)\s+(?:OBJECT-TYPE|OBJECT-IDENTITY|OBJECT IDENTIFIER|MODULE-IDENTITY)(?:(?!::=).)*?::=\s*\{\s*(\w[\w-]*)\s+(\d+)\s*\}',t,re.S):

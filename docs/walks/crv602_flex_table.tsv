@@ -1,0 +1,153 @@
+idx	label	value	units	int	uint	dec	type	access	uenum	descr
+1.2.1.4123.1	System Status	Normal Operation			1		enum	ro		The operating status for the system
+1.2.1.4240.1	System Model Number	Liebert CRC305/CRC602					text	ro		System model identifier
+1.2.1.4244.1	System Serial Number	CRC602-XXXXX					text	ro		System serial number
+1.2.1.4291.1	Return Air Temperature	20.8	deg C	209		1	int16	ro	4125	The temperature of the inlet air
+1.2.1.4335.1	Firmware Version	1.03.000.00					text	ro		Firmware version identifier
+1.2.1.4400.1	PACC Controller Firmware Version	1.03.000.00					text	ro		PACC Controller Firmware Version
+1.2.1.4553.1	Server Class	AIR			2		enum	ro		The general classification for this system
+1.2.1.5002.1	Supply Air Temperature	19.4	deg C	194		1	int16	ro	4125	Air temperature measured at the outlet of the unit.
+1.2.1.5007.1	Remote Sensor Average Temperature	18.8	deg C	188		1	int16	ro	4125	Average value of remote sensor temperature measurements.
+1.2.1.5009.1	Cooling Proportional Band	3.0	deg C		30	1	uint16	rw	4126	Temperature control band above [Air Temperature Set Point]. If measured air temperature is within this band, cooling operations are proportionally controlled.
+1.2.1.5028.1	Return Humidity	6553.5	% RH		65535	1	uint16	ro	4132	Relative humidity measured at the inlet of the unit.
+1.2.1.5029.1	Humidity Set Point	50.0	% RH		500	1	uint16	rw	4132	Desired relative humidity.
+1.2.1.5030.1	Humidification Proportional Band	5.0	% RH		50	1	uint16	rw	4132	Humidity control band below [Humidity Set Point]. If measured humidity is within this band, humidification operations are proportionally controlled.
+1.2.1.5059.1	Remote Sensor Temperature	18.8	deg C	188		1	int16	ro	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.2	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.3	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.4	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.5	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.6	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.7	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.8	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.9	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.10	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
+1.2.1.5077.1	Fan Speed	50	%		50	0	uint16	ro	4124	Fan speed expressed as a percentage of the maximum rated speed.
+1.2.1.5331.1	Supply Air Temperature Set Point	19.0	deg C	190		1	int16	rw	4125	Desired supply air temperature.
+1.2.1.5333.1	Return Air Temperature Set Point	32.0	deg C	320		1	int16	rw	4125	Desired air temperature at the inlet of the unit.
+1.2.1.5366.1	Electric Reheater Hours	0	hr		0	0	uint16	rw	4099	Operating hours for electric reheater since last reset of this value.
+1.2.1.5369.1	Humidifier Hours	0	hr		0	0	uint16	rw	4099	Operating hours for humidifier since last reset of this value.
+1.2.1.5374.1	Fan Hours	238	hr		238	0	uint16	rw	4099	Operating hours for fan since last reset of this value.
+1.2.1.5382.1	Cooling State	on			1		enum	ro		Cooling operational state.
+1.2.1.5386.1	Electric Reheat State	off			0		enum	ro		Electric reheater operational state.
+1.2.1.5387.1	Dehumidifier State	off			0		enum	ro		Dehumidifier operational state.
+1.2.1.5388.1	Humidifier State	off			0		enum	ro		Humidifier operational state.
+1.2.1.5614.1	Chilled Water Valve Hours	238	hr		238	0	uint16	rw	4099	Operating hours for chilled water valve since last reset of this value.
+1.2.1.5640.1	Chilled Water Valve Open Position	38	%		38	0	uint16	ro	4124	Chilled water valve open position.
+1.2.1.5899.1	Fluid Flow Rate	0.3	m3/h		3	1	uint16	ro	4155	Flow rate of fluid used for cooling.
+1.2.1.6311.1	Chilled Water Inlet Temperature	15.5	deg C	155		1	int16	ro	4125	Temperature of the water entering the hydraulic circuit of the chilled water unit.
+1.2.1.6312.1	Chilled Water Outlet Temperature	19.9	deg C	199		1	int16	ro	4125	Temperature of the water exiting the hydraulic circuit of the chilled water unit.
+1.2.1.7505.1	Water Valve Control Mode	SupplyAirAverageTemp			3		enum	rw		Water Valve Control Mode
+1.2.1.7516.1	Fan Control Mode	ReturnAirMaxTemp			1		enum	rw		Fan Control Mode
+1.2.1.7521.1	Air Filter Hours	238	hr		238	0	uint16	rw	4099	Operating hours for the air filter since last reset of this value.
+1.2.1.7527.1	Fan Static Pressure	Unavailable	Pa		4294967295	0	uint16	ro	4130	Fan Static Pressure Measurement
+1.2.1.7528.1	System Operating State	Run			0		enum	ro		System Operating State
+1.2.1.7529.1	Teamwork Status	Single			0		enum	ro		Teamwork Status
+1.2.1.7536.1	Monitoring ON/OFF	Unavailable			4294967295		enum	rw		Monitoring ON/OFF
+1.2.1.8077.1	Supply Air Sensor Temperature	19.9	deg C	199		1	int16	ro	4125	Air temperature measured at an outlet sensor.
+1.2.1.8077.2	Supply Air Sensor Temperature	19.0	deg C	190		1	int16	ro	4125	Air temperature measured at an outlet sensor.
+1.2.1.8077.3	Supply Air Sensor Temperature	No Support	deg C			1	int16	ro	4125	Air temperature measured at an outlet sensor.
+1.2.1.8078.1	Return Air Sensor Temperature	20.9	deg C	209		1	int16	ro	4125	Air temperature measured at an inlet sensor.
+1.2.1.8078.2	Return Air Sensor Temperature	No Support	deg C			1	int16	ro	4125	Air temperature measured at an inlet sensor.
+1.2.1.8080.1	Return Sensor Humidity	66.4	% RH		664	1	uint16	ro	4132	Relative humidity measured at an inlet sensor.
+1.2.1.8082.1	Remote Sensor Air Temperature Set Point	23.0	deg C	230		1	int16	rw	4125	Desired temperature monitored by the remote air temperature sensors.
+1.2.1.8090.1	Supply Air Theoretical Humidity	75.8	% RH		758	1	uint16	ro	4132	This is a theoretical supply air humidity value which is calculated based on other values and is not a measurement directly from a humidity sensor.
+1.2.1.8122.1	Condensate Pump Hours	0	hr		0	0	uint16	rw	4099	Condensate Pump Hours
+1.2.2.4291.1	Return Air Temperature	69.6	deg F	696		1	int16	ro	4127	The temperature of the inlet air
+1.2.2.5002.1	Supply Air Temperature	66.9	deg F	669		1	int16	ro	4127	Air temperature measured at the outlet of the unit.
+1.2.2.5007.1	Remote Sensor Average Temperature	65.8	deg F	658		1	int16	ro	4127	Average value of remote sensor temperature measurements.
+1.2.2.5009.1	Cooling Proportional Band	5.4	deg F		54	1	uint16	rw	4128	Temperature control band above [Air Temperature Set Point]. If measured air temperature is within this band, cooling operations are proportionally controlled.
+1.2.2.5059.1	Remote Sensor Temperature	65.8	deg F	658		1	int16	ro	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.2	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.3	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.4	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.5	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.6	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.7	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.8	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.9	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.10	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
+1.2.2.5331.1	Supply Air Temperature Set Point	66.2	deg F	662		1	int16	rw	4127	Desired supply air temperature.
+1.2.2.5333.1	Return Air Temperature Set Point	89.6	deg F	896		1	int16	rw	4127	Desired air temperature at the inlet of the unit.
+1.2.2.6311.1	Chilled Water Inlet Temperature	59.9	deg F	599		1	int16	ro	4127	Temperature of the water entering the hydraulic circuit of the chilled water unit.
+1.2.2.6312.1	Chilled Water Outlet Temperature	67.8	deg F	678		1	int16	ro	4127	Temperature of the water exiting the hydraulic circuit of the chilled water unit.
+1.2.2.8077.1	Supply Air Sensor Temperature	67.8	deg F	678		1	int16	ro	4127	Air temperature measured at an outlet sensor.
+1.2.2.8077.2	Supply Air Sensor Temperature	66.2	deg F	662		1	int16	ro	4127	Air temperature measured at an outlet sensor.
+1.2.2.8077.3	Supply Air Sensor Temperature	No Support	deg F			1	int16	ro	4127	Air temperature measured at an outlet sensor.
+1.2.2.8078.1	Return Air Sensor Temperature	69.6	deg F	696		1	int16	ro	4127	Air temperature measured at an inlet sensor.
+1.2.2.8078.2	Return Air Sensor Temperature	No Support	deg F			1	int16	ro	4127	Air temperature measured at an inlet sensor.
+1.2.2.8082.1	Remote Sensor Air Temperature Set Point	73.4	deg F	734		1	int16	rw	4127	Desired temperature monitored by the remote air temperature sensors.
+1.2.100.4300.1	Internal Communications Failure	Inactive Event					event16	ro		The control has detected a communication failure of a component on the internal communication bus
+1.2.100.4720.1	Smoke Detected	Inactive Event					event16	ro		Smoke detected.
+1.2.100.4723.1	Water Under Floor	Inactive Event					event16	ro		Water under the floor is detected.
+1.2.100.4729.1	Fan Issue	Inactive Event					event16	ro		One or more fans are not operating within their operational parameters.
+1.2.100.4729.2	Fan Issue	Inactive Event					event16	ro		One or more fans are not operating within their operational parameters.
+1.2.100.4729.3	Fan Issue	Inactive Event					event16	ro		One or more fans are not operating within their operational parameters.
+1.2.100.4729.4	Fan Issue	Inactive Event					event16	ro		One or more fans are not operating within their operational parameters.
+1.2.100.4729.5	Fan Issue	Inactive Event					event16	ro		One or more fans are not operating within their operational parameters.
+1.2.100.4729.6	Fan Issue	Inactive Event					event16	ro		One or more fans are not operating within their operational parameters.
+1.2.100.4729.7	Fan Issue	Inactive Event					event16	ro		One or more fans are not operating within their operational parameters.
+1.2.100.4729.8	Fan Issue	Inactive Event					event16	ro		One or more fans are not operating within their operational parameters.
+1.2.100.4729.9	Fan Issue	Inactive Event					event16	ro		One or more fans are not operating within their operational parameters.
+1.2.100.4729.10	Fan Issue	Inactive Event					event16	ro		One or more fans are not operating within their operational parameters.
+1.2.100.5015.1	Supply Air Over Temperature	Inactive Event					event16	ro		[Supply Air Temperature] has exceeded [High Supply Air Temperature Threshold].
+1.2.100.5019.1	Supply Air Under Temperature	Inactive Event					event16	ro		Supply air low temperature event.
+1.2.100.5023.1	Return Air Over Temperature	Inactive Event					event16	ro		Return air high temperature event.
+1.2.100.5026.1	Supply Air Sensor Issue	Inactive Event					event16	ro		The air sensor at the outlet of the unit is disconnected or the signal is out of range.
+1.2.100.5026.2	Supply Air Sensor Issue	Inactive Event					event16	ro		The air sensor at the outlet of the unit is disconnected or the signal is out of range.
+1.2.100.5026.3	Supply Air Sensor Issue	Inactive Event					event16	ro		The air sensor at the outlet of the unit is disconnected or the signal is out of range.
+1.2.100.5034.1	High Return Humidity	Inactive Event					event16	ro		[Return Humidity] has exceeded [High Return Humidity Threshold].
+1.2.100.5036.1	Low Return Humidity	Inactive Event					event16	ro		[Return Humidity] has dropped below [Low Return Humidity Threshold].
+1.2.100.5043.1	Humidifier Issue	Inactive Event					event16	ro		Humidifier issue detected, causing it to be locked out.
+1.2.100.5106.1	Ext Condenser Pump High Water	Inactive Event					event16	ro		High water is detected in the condensate pump by the auxiliary float, as indicated by an external input signal.
+1.2.100.5108.1	External Fire Detected	Inactive Event					event16	ro		Fire detected, as indicated by an external input signal.
+1.2.100.5118.1	Clogged Air Filter	Inactive Event					event16	ro		Air filter is dirty and needs to be (cleaned or) replaced.
+1.2.100.5147.1	Return Air Sensor Issue	Inactive Event					event16	ro		The air sensor at the inlet of the unit is disconnected or the signal is out of range.
+1.2.100.5147.2	Return Air Sensor Issue	Inactive Event					event16	ro		The air sensor at the inlet of the unit is disconnected or the signal is out of range.
+1.2.100.5335.1	Return Air Under Temperature	Inactive Event					event16	ro		[Return Air Temperature] has dropped below [Low Return Air Temperature Threshold].
+1.2.100.5500.1	Ext Remote Shutdown	Inactive Event					event16	ro		Unit is shut down by a remote signal.
+1.2.100.5597.1	Remote Sensor Over Temperature	Inactive Event					event16	ro		[Remote Sensor Temperature] has exceeded [Remote Sensor Over Temp Threshold].
+1.2.100.5598.1	Remote Sensor Under Temperature	Inactive Event					event16	ro		[Remote Sensor Temperature] has dropped below [Remote Sensor Under Temp Threshold].
+1.2.100.5902.1	Return Humidity Sensor Issue	Inactive Event					event16	ro		The humidity sensor at the inlet of the unit is disconnected or the signal is out of range.
+1.2.100.6313.1	Chilled Water Inlet Temperature Sensor Failure	Inactive Event					event16	ro		Chilled water inlet temperature sensor is disconnected or the signal is out of range.
+1.2.100.6314.1	Chilled Water Outlet Temperature Sensor Failure	Inactive Event					event16	ro		Chilled water outlet temperature sensor is disconnected or the signal is out of range.
+1.2.100.7495.1	External Air Sensor Issue	Inactive Event					event16	ro		The external air sensor is disconnected or the signal is out of range.
+1.2.100.7495.2	External Air Sensor Issue	Inactive Event					event16	ro		The external air sensor is disconnected or the signal is out of range.
+1.2.100.7495.3	External Air Sensor Issue	Inactive Event					event16	ro		The external air sensor is disconnected or the signal is out of range.
+1.2.100.7495.4	External Air Sensor Issue	Inactive Event					event16	ro		The external air sensor is disconnected or the signal is out of range.
+1.2.100.7495.5	External Air Sensor Issue	Inactive Event					event16	ro		The external air sensor is disconnected or the signal is out of range.
+1.2.100.7495.6	External Air Sensor Issue	Inactive Event					event16	ro		The external air sensor is disconnected or the signal is out of range.
+1.2.100.7495.7	External Air Sensor Issue	Inactive Event					event16	ro		The external air sensor is disconnected or the signal is out of range.
+1.2.100.7495.8	External Air Sensor Issue	Inactive Event					event16	ro		The external air sensor is disconnected or the signal is out of range.
+1.2.100.7495.9	External Air Sensor Issue	Inactive Event					event16	ro		The external air sensor is disconnected or the signal is out of range.
+1.2.100.7495.10	External Air Sensor Issue	Inactive Event					event16	ro		The external air sensor is disconnected or the signal is out of range.
+1.2.100.7503.1	Electrical Heater Failure	Inactive Event					event16	ro		The electric heater temperature exceeded a threshold.
+1.2.100.7506.1	Supply Fluid Low Flow	Inactive Event					event16	ro		Supply fluid flow has dropped below a threshold.
+1.2.100.7509.1	Outlet Fluid Under Temp	Inactive Event					event16	ro		Outlet fluid temperature has dropped below a threshold.
+1.2.100.7510.1	Outlet Fluid Over Temp	Inactive Event					event16	ro		Outlet fluid temperature has exceeded a threshold.
+1.2.100.7511.1	Inlet Fluid Over Temp	Inactive Event					event16	ro		Inlet fluid temperature has exceeded a threshold.
+1.2.100.7512.1	Inlet Fluid Under Temp	Inactive Event					event16	ro		Inlet fluid temperature has dropped below a threshold.
+1.2.100.7522.1	Loss of Airflow	Inactive Event					event16	ro		Loss of airflow detected.
+1.2.100.7523.1	Teamwork Master is offline or not connected to the network	Inactive Event					event16	ro		Loss of Teamwork Master
+1.2.100.7524.1	Loss of Teamwork Slave	Inactive Event					event16	ro		Teamwork Slave is offline or not connected to the network
+1.2.100.7525.1	Repeated Teamwork Address	Inactive Event					event16	ro		The network address of two or more units in a teamwork are the same.
+1.2.100.7537.1	Filter Maintenance Due	Inactive Event					event16	ro		The operating hours of the filter has exceeded the threshold and needs to be maintained or replaced.
+1.2.100.7558.1	Water Flow Sensor Failure	Inactive Event					event16	ro		Water flow sensor is disconnected or the signal is out of range.
+1.2.100.7561.1	Custom Alarm	Inactive Event					event16	ro		Custom Alarm
+1.2.100.7563.1	Fan Static Pressure Sensor Failure	Inactive Event					event16	ro		Fan static pressure sensor is disconnected or the signal is out of range.
+1.2.100.8072.1	10DI Sensor Communication Fail	Inactive Event					event16	ro		10DI Sensor Communication Fail
+1.3.20.1.4123	System Status	Normal Operation			1		enum	ro		The operating status for the system
+1.3.20.1.4240	System Model Number	Sensor					text	ro		System model identifier
+1.3.20.1.4553	Server Class	MONITOR			5		enum	ro		The general classification for this system
+1.3.20.1.6109	Sensor Order Identifier - Slot 01						text	rw		Sensor serial number of the sensor intended for slot 1.
+1.3.20.1.6110	Sensor Order Identifier - Slot 02						text	rw		Sensor serial number of the sensor intended for slot 2.
+1.3.20.1.6111	Sensor Order Identifier - Slot 03						text	rw		Sensor serial number of the sensor intended for slot 3.
+1.3.20.1.6112	Sensor Order Identifier - Slot 04						text	rw		Sensor serial number of the sensor intended for slot 4.
+1.3.20.1.6113	Sensor Order Identifier - Slot 05						text	rw		Sensor serial number of the sensor intended for slot 5.
+1.3.20.1.6114	Sensor Order Identifier - Slot 06						text	rw		Sensor serial number of the sensor intended for slot 6.
+1.3.20.1.6115	Sensor Order Identifier - Slot 07						text	rw		Sensor serial number of the sensor intended for slot 7.
+1.3.20.1.6116	Sensor Order Identifier - Slot 08						text	rw		Sensor serial number of the sensor intended for slot 8.
+1.3.20.1.6117	Sensor Order Identifier - Slot 09						text	rw		Sensor serial number of the sensor intended for slot 9.
+1.3.20.1.6118	Sensor Order Identifier - Slot 10						text	rw		Sensor serial number of the sensor intended for slot 10.
+1.3.20.100.5423	Too Many Sensors	Inactive Event					event16	ro		The number of sensors connected to the PDU exceeds the allowable limit
+1.3.20.100.6119	Slots not available	Inactive Event					event16	ro		The number of sensors exceeds the number of allocated slots and cannot be displayed.
