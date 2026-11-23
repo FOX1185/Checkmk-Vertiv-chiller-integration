@@ -6,8 +6,8 @@
 
 | File nel repository | Origine | Unità |
 |---|---|---|
-| `tests/snmpwalks/crv602_fw8.4.7` | `cmk --snmpwalk` (`walk Checkmk CRC602`) | <IP> – CRV602, FW 8.4.7 |
-| `tests/snmpwalks/crv300_fw6.5.0` | `cmk --snmpwalk` (`walk Checkmk CRV300`) | <IP> – CRV300, FW 6.5.0 |
+| `tests/snmpwalks/crv602_fw8.4.7` | `cmk --snmpwalk` (`walk Checkmk CRC602`) | CRV602, FW 8.4.7 |
+| `tests/snmpwalks/crv300_fw6.5.0` | `cmk --snmpwalk` (`walk Checkmk CRV300`) | CRV300, FW 6.5.0 |
 | `docs/walks/crv602_flex_table.tsv`, `crv300_flex_table.tsv` | tabella ricostruita con `tools/flex_table.py` | una riga per data point, tutte le colonne |
 | `mibs/rev26/` | pacchetto ufficiale Vertiv Rev 26 (ottobre 2025) | |
 
