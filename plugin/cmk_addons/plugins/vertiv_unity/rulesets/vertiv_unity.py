@@ -31,8 +31,10 @@ def _change_state() -> DictElement:
         parameter_form=ServiceState(
             title=Title("State if the value differs from the one found at discovery"),
             help_text=Help(
-                "Useful for set points and control modes that should not be changed. "
-                "OK disables the comparison. Re-discover the service to accept a new value."
+                "Without this setting, set points, thresholds configured on the unit, fan speed "
+                "limits and control modes report WARN when changed; other values are not "
+                "compared. OK disables the comparison. Re-discover the service to accept a new "
+                "value."
             ),
             prefill=DefaultValue(ServiceState.WARN),
         ),
@@ -44,7 +46,10 @@ def _value_form() -> Dictionary:
         title=Title("Numeric parameter"),
         help_text=Help(
             "Levels apply to the value in the unit shown in the service output "
-            "(temperatures always in °C)."
+            "(temperatures always in °C). Air and chilled water temperatures, humidity, dew "
+            "point, mains voltage, fan speed and chilled water valve opening have built-in "
+            "default levels: configuring upper or lower levels here replaces the corresponding "
+            "default, choosing 'No levels' disables it."
         ),
         elements={
             "levels_upper": DictElement(
@@ -128,8 +133,11 @@ def _events_form() -> Dictionary:
                 parameter_form=ServiceState(
                     title=Title("State of an active event without known severity"),
                     help_text=Help(
-                        "Used when no rule below matches and the unit does not provide a "
-                        "severity (Event Type) for the event."
+                        "Order of evaluation: rule below; event disabled on the unit (ignored); "
+                        "severity configured on the unit (Message/Warning/Alarm); built-in "
+                        "severity (CRIT for smoke, water, fire, airflow, fans, water flow, "
+                        "shutdowns, over-temperatures, power; OK for Unit On/Off/Standby and "
+                        "Maintenance Completed); this state for all other events."
                     ),
                     prefill=DefaultValue(ServiceState.WARN),
                 ),
@@ -226,4 +234,35 @@ rule_spec_vertiv_unity_discovery = DiscoveryParameters(
     title=Title("Vertiv Unity discovery"),
     topic=Topic.ENVIRONMENTAL,
     parameter_form=_discovery_form,
+)
+
+
+def _control_form() -> Dictionary:
+    return Dictionary(
+        title=Title("Cooling control deviation"),
+        help_text=Help(
+            "Difference between the temperature controlled by the unit (sensor and calculation "
+            "configured on the unit) and its set point. Only a deviation above the set point "
+            "(too warm) is evaluated. Default: WARN above +2 K, CRIT above +4 K."
+        ),
+        elements={
+            "levels_upper": DictElement(
+                parameter_form=SimpleLevels[float](
+                    title=Title("Upper levels for the deviation"),
+                    form_spec_template=Float(unit_symbol="K"),
+                    level_direction=LevelDirection.UPPER,
+                    prefill_fixed_levels=DefaultValue((2.0, 4.0)),
+                ),
+                required=True,
+            ),
+        },
+    )
+
+
+rule_spec_vertiv_unity_control = CheckParameters(
+    name="vertiv_unity_control",
+    title=Title("Vertiv Unity – cooling control deviation"),
+    topic=Topic.ENVIRONMENTAL,
+    parameter_form=_control_form,
+    condition=HostCondition(),
 )

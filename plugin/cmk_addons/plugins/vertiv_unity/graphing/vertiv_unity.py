@@ -79,3 +79,9 @@ metric_vertiv_unity_active_events = Metric(
     unit=Unit(DecimalNotation(""), StrictPrecision(0)),
     color=Color.RED,
 )
+metric_vertiv_unity_setpoint_deviation = Metric(
+    name="vertiv_unity_setpoint_deviation",
+    title=Title("Deviation from set point"),
+    unit=Unit(DecimalNotation("K")),
+    color=Color.DARK_ORANGE,
+)

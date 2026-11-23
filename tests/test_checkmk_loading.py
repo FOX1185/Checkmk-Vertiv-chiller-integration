@@ -13,6 +13,7 @@ CHECK_PLUGINS = [
     vu.check_plugin_vertiv_unity_state,
     vu.check_plugin_vertiv_unity_text,
     vu.check_plugin_vertiv_unity_events,
+    vu.check_plugin_vertiv_unity_control,
 ]
 
 

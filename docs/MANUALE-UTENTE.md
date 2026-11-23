@@ -1,4 +1,4 @@
-# Manuale utente – plugin `vertiv_unity` 1.0.0
+# Manuale utente – plugin `vertiv_unity` 1.2.0
 
 Monitoraggio SNMP in Checkmk delle unità di condizionamento **Vertiv/Liebert** con scheda di rete
 **IntelliSlot Unity** (es. Liebert CRV, CRC).
@@ -14,11 +14,12 @@ da solo tipo, unità di misura e decimali di ogni valore.
 | Tipo di servizio | Esempi | Cosa mostra |
 |---|---|---|
 | **Valori numerici** | Return Air Temperature, Supply Humidity, Fan Speed, Fluid Flow Rate, Fan Hours | valore con unità, grafico, soglie configurabili |
-| **Impostazioni numeriche** | Air Temperature Set Point, Cooling Proportional Band, High Supply Air Temperature Threshold | valore e grafico; avviso opzionale se qualcuno le modifica |
+| **Impostazioni numeriche** | Air Temperature Set Point, Cooling Proportional Band, High Supply Air Temperature Threshold | valore e grafico; WARN se set point, soglie o limiti dei ventilatori vengono modificati |
 | **Stati** | System Status, System Operating State, Unit Operating State, ATS Power Supply Status | stato attuale e codice, con valutazione OK/WARN/CRIT |
-| **Modalità** | Fan Control Mode, Water Valve Control Mode, Air Temperature Control Sensor | modalità attuale; avviso opzionale se cambia |
+| **Modalità** | Fan Control Mode, Water Valve Control Mode, Air Temperature Control Sensor | modalità attuale; WARN se cambia |
 | **Testi** | System Model Number, System Serial Number, Firmware Version, System Name | valore (sempre OK) |
-| **Events** | un solo servizio | eventi/allarmi attivi con descrizione e codice |
+| **Events** | un solo servizio | eventi/allarmi attivi con descrizione, codice e severità |
+| **Cooling Control Deviation** | un solo servizio | scostamento tra temperatura regolata dall'unità e set point |
 
 Il nome del servizio è quello che la scheda assegna al parametro, ad esempio `Return Air Temperature`. Se un
 parametro ha più sensori, si aggiunge il numero (`Supply Air Sensor Temperature 2`). Nei dettagli di ogni
@@ -28,8 +29,8 @@ Servizi tipici:
 
 | Unità | Servizi |
 |---|---|
-| CRC602 | 41 (26 numerici, 10 stati/modalità, 4 testi, Events) |
-| CRV300 | 59 (32 numerici, 23 stati/modalità, 3 testi, Events) |
+| CRC602 | 42 (26 numerici, 10 stati/modalità, 4 testi, Events, Cooling Control Deviation) |
+| CRV300 | 60 (32 numerici, 23 stati/modalità, 3 testi, Events, Cooling Control Deviation) |
 
 ### Valori non disponibili
 
@@ -48,12 +49,44 @@ Se un valore già monitorato diventa non disponibile (es. un sensore scollegato)
 |---|---|---|---|
 | System Status | Normal Operation | StartUp, Normal with Warning | Normal with Alarm, Abnormal Operation |
 | System Operating State | Run, Standby | Display Off, Remote Off, Monitoring Off | Lockout |
-| Unit Operating State | on, standby | off | — |
-| System On/Off Control | on | off | — |
+| Unit Operating State | on, standby | — | off |
+| System On/Off Control | on | — | off |
+| Cooling State | on; off con unità in standby o spenta | off con unità in marcia | — |
+| ATS – Active Power Supply | Power Supply 1 | Power Supply 2 (unità sull'alimentazione di riserva) | — |
 | ATS Power Supply 1/2 Status | OK | — | Not OK |
+| Unit Control Mode, Fan Control Mode (FW 6.5) | Internal (Auto) | External (Manual) | — |
 | tutti gli altri stati e modalità | qualunque valore | — | — |
 
-Si possono cambiare con una regola (§4.2).
+**Avviso su modifica.** Alcuni servizi vanno in **WARN** se il valore cambia rispetto a quello registrato alla
+discovery:
+- set point;
+- soglie configurate sull'unità;
+- limiti dei ventilatori;
+- modalità e sensori di controllo;
+- stato del teamwork.
+
+Bande proporzionali, contaore e stati operativi non generano questo avviso. Dopo una modifica voluta, rifare
+la discovery del servizio per accettare il nuovo valore.
+
+Stati e avviso su modifica si possono cambiare con una regola (§4.1, §4.2).
+
+### Servizio Cooling Control Deviation
+
+Confronta la temperatura che l'unità sta regolando con il suo set point. Il plugin legge dalla scheda quale
+sensore e quale calcolo (media, massimo, minimo) sono configurati:
+- CRV300: *Air Temperature Control Sensor* + *Air Temperature Set Point*;
+- CRC602: *Water Valve Control Mode* + set point di mandata, ripresa o sensori remoti.
+
+Output tipico: `Deviation from set point: +0.4 K; controlled supply air (average): 19.4 °C, set point 19.0 °C`.
+
+| Scostamento sopra il set point | Stato |
+|---|---|
+| fino a +2 K | OK |
+| oltre +2 K | WARN |
+| oltre +4 K | CRIT |
+
+Un valore sotto il set point (unità che raffredda più del necessario) non genera allarmi. Le soglie si
+cambiano con la regola *Vertiv Unity – cooling control deviation*.
 
 ### Servizio Events
 
@@ -63,8 +96,18 @@ tipici: `No active events (61 monitored)` oppure `1 active event(s), Clogged Air
 Stato di un evento attivo, nell'ordine:
 1. regola per codice evento, se presente (§4.3);
 2. se sulla scheda l'evento è **disabilitato** → ignorato;
-3. se la scheda indica la severità (Message / Warning / Alarm) → OK / WARN / CRIT;
-4. altrimenti → **WARN** (modificabile).
+3. se la scheda indica la severità (Message / Warning / Alarm) → OK / WARN / CRIT. **La configurazione
+   della scheda prevale** sulla severità predefinita;
+4. severità predefinita del plugin (tabella sotto);
+5. altrimenti → **WARN** (modificabile).
+
+Severità predefinita:
+
+| Severità | Eventi (codice) |
+|---|---|
+| **CRIT** | Smoke Detected (4720), Water Under Floor (4723), External Fire Detected (5108), Loss of Airflow / Loss of Air Flow (7522, 5053), Fan Issue (4729), Top/Bottom Fan Issue (5055, 5056), Supply Fluid Low Flow (7506), Supply Chilled Water Loss of Flow (4980), Ext Loss of Flow (5105), Chilled Water Control Valve Failure (4703), Unit Shutdown (5113), High Power Shutdown (5121), Shutdown - Loss Of Power (4714), Ext Remote Shutdown (5500), Supply Air Over Temperature (5015), Return Air Over Temperature (5023), Ext Over Temperature (5104), Supply Chilled Water Over Temp (4626), Outlet/Inlet Fluid Over Temp (7510, 7511), Ext Condenser Pump High Water (5106), Internal Communications Failure (4300), Power Source 'A'/'B' Issue (6236, 6237), Electrical Heater Failure (7503), Reheater Over Temperature (5068) |
+| **OK** (informativi) | Unit On (5109), Unit Off (5110), Unit Standby (5111), Maintenance Completed (5117) |
+| **WARN** | tutti gli altri: sensori, umidità, sotto-temperature, filtri, manutenzione, ore superate, teamwork, umidificatore… |
 
 La severità e l'abilitazione per evento sono disponibili solo su alcuni firmware. Sul CRV300 riguardano
 16 eventi configurabili.
@@ -91,7 +134,7 @@ Testato con:
 
 ## 3. Installazione
 
-Il pacchetto è `dist/vertiv_unity-1.0.0.mkp`. Negli esempi:
+Il pacchetto è `dist/vertiv_unity-1.2.0.mkp`. Negli esempi:
 - il sito si chiama `cmk`;
 - `<container>` è il nome del container Docker di Checkmk (`docker ps`).
 
@@ -109,13 +152,13 @@ docker exec -u cmk <container> rm -rf /omd/sites/cmk/local/lib/python3/cmk_addon
 Copiare il file nel container:
 
 ```bash
-docker cp dist/vertiv_unity-1.0.0.mkp <container>:/tmp/
+docker cp dist/vertiv_unity-1.2.0.mkp <container>:/tmp/
 ```
 
 Aggiungere e attivare il pacchetto come utente del sito:
 
 ```bash
-docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.0.0.mkp && mkp enable vertiv_unity 1.0.0'
+docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.2.0.mkp && mkp enable vertiv_unity 1.2.0'
 ```
 
 In alternativa, se l'edizione la prevede, si può usare la GUI: **Setup → Maintenance → Extension
@@ -180,17 +223,59 @@ discovery è in **Setup → Services → Discovery rules**. Nelle regole per ser
 |---|---|
 | Upper levels | WARN/CRIT se il valore **supera** le soglie |
 | Lower levels | WARN/CRIT se il valore **scende sotto** le soglie |
-| State if the value differs from the one found at discovery | stato da assegnare se un'impostazione viene modificata (OK = controllo disattivato) |
+| State if the value differs from the one found at discovery | stato se un'impostazione viene modificata. Se non impostato: WARN per set point, soglie e limiti dei ventilatori, nessun controllo per gli altri valori. OK = controllo disattivato |
 
 Le soglie sono nell'unità mostrata dal servizio: °C per le temperature, % per umidità e percentuali, h per i
-contaore, m³/h per le portate e così via. Non ci sono soglie predefinite.
+contaore, m³/h per le portate e così via.
+
+#### Soglie predefinite
+
+Le grandezze principali hanno soglie già impostate. Sono ricavate da riferimenti di settore, non dai valori
+misurati sulle unità:
+
+| Grandezza | Servizi (data ID) | WARN / CRIT superiore | WARN / CRIT inferiore | Riferimento |
+|---|---|---|---|---|
+| Aria di mandata e sensori ai rack | Supply Air Temperature (5002), Supply Air Sensor Temperature *n* (8077), Remote Sensor Temperature *n* / Average / Minimum / Maximum (5059, 5007, 5005, 5006) | 27 / 32 °C | 15 / 12 °C | ASHRAE TC 9.9 classe A1: consigliato 18–27 °C, ammesso 15–32 °C |
+| Aria di ripresa (corridoio caldo) | Return Air Temperature (4291), Return Air Sensor Temperature *n* (8078) | 40 / 45 °C | — | aria calda in uscita dai server; una temperatura bassa non è un problema |
+| Umidità di ripresa | Return Humidity (5028), Return Sensor Humidity (8080) | 70 / 80 % | 20 / 15 % | ASHRAE A1: fino all'80 % ammesso; sotto il 20 % aumenta il rischio di scariche elettrostatiche |
+| Umidità di mandata | Supply Humidity (5027), Supply Air Theoretical Humidity (8090) | 80 / 90 % | 20 / 15 % | l'aria fredda di mandata ha un'umidità relativa più alta di quella di ripresa |
+| Punto di rugiada | Return Dew Point (5004) | 17 / 20 °C | −9 / −12 °C | ASHRAE A1: rugiada massima 17 °C ammessa, minima −9 °C |
+| Acqua refrigerata in ingresso all'unità | Chilled Water Inlet Temperature (6311), Supply Fluid Temperature (4624) | 20 / 25 °C | 5 / 3 °C | mandata tipica 7–20 °C; più calda riduce la capacità frigorifera, sotto 5 °C c'è rischio di gelo senza glicole |
+| Acqua refrigerata in uscita dall'unità | Chilled Water Outlet Temperature (6312), Outlet Chilled Water Temperature (5668) | 26 / 30 °C | 5 / 3 °C | ritorno tipico: mandata + 5…6 °C |
+| Riserva di capacità | Fan Speed (5077), Chilled Water Valve Open Position (5640), Cooling Capacity (Primary) (5078) | **solo WARN** ≥ 95 % | — | al massimo l'unità non ha più riserva; non è un guasto (i guasti arrivano dagli eventi) |
+| Tensione di alimentazione F-N | System Input RMS A-N, B-N, C-N (4096, 4098, 4100) | 253 / 264.5 V | 207 / 195.5 V | 230 V ±10 % WARN, ±15 % CRIT (EN 50160, tolleranza di targa tipica) |
+| Tensione di alimentazione F-F | System Input RMS A-B, B-C, C-A (4097, 4099, 4101) | 440 / 460 V | 360 / 340 V | 400 V ±10 % WARN, ±15 % CRIT |
+
+Controlli che confrontano più parametri:
+
+| Servizio | Stato | Condizione |
+|---|---|---|
+| Fan Speed | **CRIT** | ventole a 0 % con l'unità in marcia (System Operating State = Run oppure Unit Operating State = on) |
+| Fluid Flow Rate / Water Flow Rate | **CRIT** | portata nulla (< 0.05 m³/h o < 1 l/min) con valvola dell'acqua aperta ≥ 20 % |
+
+Le tensioni sono visibili solo se l'unità ha il misuratore di energia; altrimenti la scheda le riporta
+"Unavailable" e non diventano servizi. Per reti diverse da 230/400 V, ad esempio 208/480 V, impostare le
+soglie con la regola.
+
+- Una regola che imposta *Upper levels* o *Lower levels* **sostituisce** la soglia predefinita
+  corrispondente. L'altra soglia resta quella predefinita.
+- Scegliendo **No levels** nella regola, la soglia predefinita si disattiva.
+- Nei dettagli del servizio è indicato quando sono in uso le soglie predefinite.
+- Set point, bande, soglie configurate sull'unità, contaore, correnti, potenza, efficienza e valori
+  assoluti di portata **non** hanno soglie predefinite. Dipendono dal dimensionamento e dall'esercizio
+  dell'impianto, oppure l'unità li controlla già con i propri eventi (es. *Filter Maintenance Due*,
+  *Hours Exceeded*).
+
+> Le soglie predefinite sono pensate per una sala dati tipica. Se l'impianto lavora volutamente fuori da
+> questi valori (es. acqua refrigerata a temperatura elevata, corridoio caldo oltre 40 °C), adattarle con
+> la regola.
 
 Esempi:
-- *Return Air Temperature*: Upper levels 27 / 30.
+- *Supply Fluid Temperature*: Upper levels 23 / 26, se l'impianto lavora con acqua a 20–22 °C.
 - *Air Filter Hours*: Upper levels 2000 / 2500, come promemoria manutenzione.
 - *Chilled Water Inlet Temperature*: Lower levels 6 / 4.
-- *Air Temperature Set Point*: "State if the value differs…" = WARN, per accorgersi di modifiche al set
-  point.
+- *Fan Speed*: Upper levels 90 / 100, per avere anche un CRIT quando i ventilatori sono al massimo.
+- *Air Temperature Set Point*: "State if the value differs…" = OK, per non ricevere avvisi sulle modifiche.
 
 Dopo una modifica voluta di un set point, rifare la discovery del servizio per accettare il nuovo valore.
 
@@ -203,20 +288,21 @@ Dopo una modifica voluta di un set point, rifare la discovery del servizio per a
 
 Esempi:
 - *Unit Operating State*: `standby` → WARN, se l'unità non deve mai andare in standby.
-- *Cooling State*: `off` → CRIT.
-- *Fan Control Mode*: "State if the value differs…" = WARN.
+- *Cooling State*: `off` → CRIT (sempre, anche con l'unità in standby).
+- *Teamwork Status*: "State if the value differs…" = OK, se il teamwork cambia modalità per scelta.
 
 ### 4.3 Vertiv Unity – events
 
 | Opzione | Effetto |
 |---|---|
-| State of an active event without known severity | predefinito WARN |
+| State of an active event without known severity | stato degli eventi non presenti nella tabella della severità predefinita; predefinito WARN |
 | State per event code | per un codice (es. `5118`) o una singola istanza (es. `4729.3`): OK, WARN, CRIT, UNKNOWN o **Ignore** |
 
+La regola prevale su tutto, compresa la configurazione della scheda.
+
 Esempi:
-- `4720` (Smoke Detected) → CRIT;
-- `4723` (Water Under Floor) → CRIT;
-- `7537` (Filter Maintenance Due) → WARN;
+- `5118` (Clogged Air Filter) → CRIT;
+- `5500` (Ext Remote Shutdown) → WARN, se lo spegnimento remoto è una procedura normale;
 - `7561` (Custom Alarm) → Ignore, se non usato.
 
 Il codice di un evento è quello tra parentesi quadre nell'output del servizio. Gli elenchi dei codici per
@@ -233,6 +319,15 @@ modello sono in `docs/mapping/*_SNMP_Events.txt`.
 
 Dopo una modifica di questa regola, rifare la discovery: Rescan, poi rimuovere i servizi *vanished*.
 
+### 4.5 Vertiv Unity – cooling control deviation
+
+| Opzione | Predefinito | Effetto |
+|---|---|---|
+| Upper levels for the deviation | 2 / 4 K | WARN/CRIT quando la temperatura regolata supera il set point di oltre questi valori |
+
+Esempio: 3 / 5 K per unità con una banda proporzionale ampia, che lavorano normalmente qualche grado
+sopra il set point.
+
 ---
 
 ## 5. Aggiornamento e disinstallazione
@@ -247,12 +342,27 @@ docker cp dist/vertiv_unity-X.Y.Z.mkp <container>:/tmp/
 docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-X.Y.Z.mkp && mkp enable vertiv_unity X.Y.Z && omd restart'
 ```
 
-Poi Rescan della discovery, se le note di rilascio lo indicano.
+Poi Rescan della discovery, se le note di rilascio lo indicano. Il pacchetto precedente resta in `mkp list`
+come inattivo; si può eliminare con `mkp remove vertiv_unity <versione precedente>`.
+
+*Da 1.0.0 a 1.1.0:* nessuna nuova discovery necessaria. Le soglie predefinite si applicano subito ai servizi
+esistenti, quindi alcuni servizi possono passare in WARN/CRIT: controllare i valori e adattare le regole se
+l'impianto lavora volutamente fuori dai valori predefiniti (§4.1).
+
+*Da 1.1.0 a 1.2.0:*
+- fare la **discovery** (Rescan) per aggiungere il nuovo servizio *Cooling Control Deviation*;
+- da questa versione:
+  - gli eventi gravi diventano CRIT;
+  - unità spenta = CRIT;
+  - ventole e valvola al 95 % danno WARN;
+  - set point e modalità danno WARN se cambiano rispetto alla discovery.
+- se un'impostazione è stata modificata dopo l'ultima discovery, il servizio va in WARN: rifare la discovery
+  di quel servizio per accettare il valore attuale.
 
 **Disinstallazione:**
 
 ```bash
-docker exec -u cmk <container> bash -lc 'mkp disable vertiv_unity 1.0.0 && mkp remove vertiv_unity 1.0.0 && omd restart'
+docker exec -u cmk <container> bash -lc 'mkp disable vertiv_unity 1.2.0 && mkp remove vertiv_unity 1.2.0 && omd restart'
 ```
 
 Poi rifare la discovery: i servizi del plugin risultano *vanished*, mentre i servizi Liebert standard

@@ -2,6 +2,58 @@
 
 Formato: [Keep a Changelog](https://keepachangelog.com/it/1.1.0/), versionamento semantico.
 
+## [1.2.0] – 2026-11-23
+
+### Aggiunto
+- **Severità predefinita degli eventi:**
+  - CRIT per fumo, acqua sotto il pavimento, incendio, perdita di flusso d'aria, guasto ventole, perdita di
+    flusso d'acqua, guasto valvola, arresti dell'unità, sovratemperature, pompa condensa, comunicazione
+    interna, alimentazione, riscaldatore;
+  - OK per i messaggi Unit On/Off/Standby e Maintenance Completed.
+
+  La severità configurata sulla scheda resta prioritaria.
+- **Riserva di capacità:** WARN (senza CRIT) con Fan Speed, Chilled Water Valve Open Position o Cooling
+  Capacity ≥ 95 %.
+- **Controlli incrociati:**
+  - CRIT se le ventole sono ferme con l'unità in marcia;
+  - CRIT se la portata d'acqua è nulla con la valvola aperta ≥ 20 %.
+- **Tensioni di alimentazione:** 230 V F-N e 400 V F-F, WARN ±10 %, CRIT ±15 %.
+- **Nuovo servizio `Cooling Control Deviation`:** scostamento tra temperatura regolata (sensore e calcolo
+  letti dalla scheda) e set point. WARN oltre +2 K, CRIT oltre +4 K. Nuova regola *Vertiv Unity – cooling
+  control deviation* e nuova metrica `vertiv_unity_setpoint_deviation`.
+- **Stati:**
+  - Cooling State off con unità in marcia → WARN;
+  - ATS su Power Supply 2 → WARN;
+  - Unit/Fan Control Mode in manuale → WARN.
+
+### Modificato
+- Unit Operating State e System On/Off Control "off": da WARN a **CRIT**.
+- **Avviso su modifica attivo per default** (WARN) per set point, soglie configurate sulla scheda, limiti
+  dei ventilatori, modalità e sensori di controllo, stato del teamwork. Si disattiva con la regola
+  (stato OK).
+- Discovery necessaria solo per aggiungere `Cooling Control Deviation`.
+
+## [1.1.0] – 2026-11-23
+
+Non rilasciata separatamente: inclusa nella 1.2.0.
+
+### Aggiunto
+- **Soglie predefinite** per i parametri numerici con riferimenti riconosciuti (ASHRAE TC 9.9, prassi per
+  l'acqua refrigerata):
+  - aria di mandata e sensori ai rack: 27/32 °C, 15/12 °C;
+  - aria di ripresa: 40/45 °C;
+  - umidità di ripresa: 70/80 %, 20/15 %;
+  - umidità di mandata: 80/90 %, 20/15 %;
+  - punto di rugiada: 17/20 °C, −9/−12 °C;
+  - acqua refrigerata in ingresso: 20/25 °C, 5/3 °C;
+  - acqua refrigerata in uscita: 26/30 °C, 5/3 °C.
+- Nei dettagli del servizio è indicato quando sono in uso le soglie predefinite.
+
+### Modificato
+- Regola *Vertiv Unity – numeric parameters*: ogni soglia configurata sostituisce quella predefinita;
+  "No levels" la disattiva.
+- Nessuna nuova discovery necessaria: dopo l'aggiornamento le soglie si applicano ai servizi esistenti.
+
 ## [1.0.0] – 2026-11-23
 
 Prima versione.

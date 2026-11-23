@@ -2,9 +2,10 @@
 
 Plugin SNMP per **Checkmk 2.5** che monitora le unità di condizionamento Vertiv/Liebert con scheda
 **IntelliSlot Unity**. Legge in modo dinamico tutti i parametri esposti dalla scheda: crea un servizio per
-ogni parametro, con grafici e soglie configurabili, più un servizio per gli eventi attivi.
+ogni parametro, con grafici e soglie/stati WARN-CRIT predefiniti per le funzioni principali (aria, acqua,
+umidità, ventole, alimentazione, regolazione), sempre configurabili, più un servizio per gli eventi attivi.
 
-**Versione corrente: 1.0.0** – pacchetto [`dist/vertiv_unity-1.0.0.mkp`](dist/vertiv_unity-1.0.0.mkp)
+**Versione corrente: 1.2.0** – pacchetto [`dist/vertiv_unity-1.2.0.mkp`](dist/vertiv_unity-1.2.0.mkp)
 
 ## Ambiente di test
 
@@ -17,8 +18,8 @@ ogni parametro, con grafici e soglie configurabili, più un servizio per gli eve
 
 | Unità | Modello rilevato | Scheda di rete | Firmware scheda | Controllore | Device ID (lgpAgentDeviceId) | Esito |
 |---|---|---|---|---|---|---|
-| Liebert CRV300 | `Liebert CRV` | IS-UNITY-DP | **6.5.0.0** (`IS-UNITY_6.5.0.0_00018`) | iCOM (da Device ID) | `lgpIcomCRtypeCRV` | 59 servizi (32 numerici, 23 stati/modalità, 3 testi, eventi) – verificato su walk |
-| Liebert CRC602 (in progetto "CRV602") | `Liebert CRC305/CRC602` | IS-UNITY-DP | **8.4.7.0** (`IS-UNITY_8.4.7.0_00166`) | PACC FW 1.03.000.00 | `lgpCRC300600` | 41 servizi (26 numerici, 10 stati/modalità, 4 testi, eventi) – **verificato in Checkmk** |
+| Liebert CRV300 | `Liebert CRV` | IS-UNITY-DP | **6.5.0.0** (`IS-UNITY_6.5.0.0_00018`) | iCOM (da Device ID) | `lgpIcomCRtypeCRV` | 60 servizi (32 numerici, 23 stati/modalità, 3 testi, eventi, regolazione) – verificato su walk |
+| Liebert CRC602 (in progetto "CRV602") | `Liebert CRC305/CRC602` | IS-UNITY-DP | **8.4.7.0** (`IS-UNITY_8.4.7.0_00166`) | PACC FW 1.03.000.00 | `lgpCRC300600` | 42 servizi (26 numerici, 10 stati/modalità, 4 testi, eventi, regolazione) – **verificato in Checkmk** |
 | Liebert CRV25 | — | — | 7.8.0.0 (`IS-UNITY_7.8.0.0_00083`) | — | — | non ancora verificato |
 
 Nei walk di test (`tests/snmpwalks/`) seriali e nome di sistema sono sostituiti da segnaposto (`XXXX…`, `UNIT-1`).
@@ -37,11 +38,11 @@ MIB di riferimento: Vertiv **SNMP MIB Support Rev 26** (ottobre 2025), in `mibs/
 ## Installazione rapida
 
 ```bash
-docker cp dist/vertiv_unity-1.0.0.mkp <container>:/tmp/
+docker cp dist/vertiv_unity-1.2.0.mkp <container>:/tmp/
 ```
 
 ```bash
-docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.0.0.mkp && mkp enable vertiv_unity 1.0.0 && omd restart'
+docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.2.0.mkp && mkp enable vertiv_unity 1.2.0 && omd restart'
 ```
 
 Poi, per ogni unità: Service discovery → **Rescan** → accettare i nuovi servizi → rimuovere i servizi Liebert
