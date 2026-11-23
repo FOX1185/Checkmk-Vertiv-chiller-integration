@@ -88,8 +88,11 @@ DEFAULT_STATE_MAPS: Mapping[int, Mapping[str, State]] = {
         "monitoring off": State.WARN,
         "lockout": State.CRIT,
     },
-    4706: {"on": State.OK, "standby": State.OK, "off": State.WARN},  # Unit Operating State
-    5143: {"on": State.OK, "off": State.WARN},  # System On/Off Control
+    4706: {"on": State.OK, "standby": State.OK, "off": State.CRIT},  # Unit Operating State
+    5143: {"on": State.OK, "off": State.CRIT},  # System On/Off Control
+    5672: {"power supply 1": State.OK, "power supply 2": State.WARN},  # ATS active supply
+    4707: {"internal (auto)": State.OK, "external (manual)": State.WARN},  # Unit Control Mode
+    5047: {"internal (auto)": State.OK, "external (manual)": State.WARN},  # Fan Control Mode (FW 6.5)
     5673: {"ok": State.OK, "not ok": State.CRIT},  # ATS Power Supply 1 Status
     5674: {"ok": State.OK, "not ok": State.CRIT},  # ATS Power Supply 2 Status
 }
@@ -123,8 +126,8 @@ class DefaultLevels:
 
     profile: str
     metric: str  # levels only apply if the data point really maps to this metric
-    upper: tuple[float, float] | None
-    lower: tuple[float, float] | None
+    upper: tuple[float, float | None] | None  # (warn, crit); crit None = warning only
+    lower: tuple[float, float | None] | None
 
 
 # References: ASHRAE TC 9.9 thermal guidelines (class A1: recommended inlet 18-27 °C, allowable
@@ -137,6 +140,12 @@ _RH_SUPPLY = DefaultLevels("supply air humidity", "humidity", (80.0, 90.0), (20.
 _DEW_POINT = DefaultLevels("dew point (ASHRAE A1)", "temp", (17.0, 20.0), (-9.0, -12.0))
 _CW_SUPPLY = DefaultLevels("chilled water supply", "temp", (20.0, 25.0), (5.0, 3.0))
 _CW_RETURN = DefaultLevels("chilled water return", "temp", (26.0, 30.0), (5.0, 3.0))
+# Capacity reserve: fans / chilled water valve at the top of their range (warning only; actual
+# failures are reported by the unit's own events, see DEFAULT_EVENT_STATES)
+_CAPACITY = DefaultLevels("capacity reserve", "vertiv_unity_percent", (95.0, None), None)
+# Mains voltage: +/-10 % (EN 50160 / usual nameplate tolerance) WARN, +/-15 % CRIT
+_V_PHASE_N = DefaultLevels("mains 230 V phase-neutral", "voltage", (253.0, 264.5), (207.0, 195.5))
+_V_PHASE_PHASE = DefaultLevels("mains 400 V phase-phase", "voltage", (440.0, 460.0), (360.0, 340.0))
 
 DEFAULT_LEVELS: Mapping[int, DefaultLevels] = {
     5002: _AIR_INLET,  # Supply Air Temperature
@@ -156,7 +165,47 @@ DEFAULT_LEVELS: Mapping[int, DefaultLevels] = {
     6311: _CW_SUPPLY,  # Chilled Water Inlet Temperature
     5668: _CW_RETURN,  # Outlet Chilled Water Temperature
     6312: _CW_RETURN,  # Chilled Water Outlet Temperature
+    5077: _CAPACITY,  # Fan Speed
+    5640: _CAPACITY,  # Chilled Water Valve Open Position
+    5078: _CAPACITY,  # Cooling Capacity (Primary)
+    4096: _V_PHASE_N,  # System Input RMS A-N
+    4098: _V_PHASE_N,  # System Input RMS B-N
+    4100: _V_PHASE_N,  # System Input RMS C-N
+    4097: _V_PHASE_PHASE,  # System Input RMS A-B
+    4099: _V_PHASE_PHASE,  # System Input RMS B-C
+    4101: _V_PHASE_PHASE,  # System Input RMS C-A
 }
+
+# Settings whose change is reported (WARN) by default unless a rule sets "change_state"
+CHANGE_ALERT_IDS = frozenset(
+    {
+        5008, 5331, 5333, 8082, 5029,  # set points
+        5014, 5018, 5022, 4625, 5033, 5035,  # thresholds configured on the unit
+        5049, 5050, 5051,  # fan speed manual / max / min set points
+        5012, 5013, 5052, 5047, 4707, 7505, 7516, 5058, 7529,  # control modes and sensors
+    }
+)
+
+# Default state of an active event when no rule matches and the unit provides no severity
+DEFAULT_EVENT_STATES: Mapping[int, State] = {
+    **dict.fromkeys(
+        (
+            4720, 4723, 5108,  # smoke, water under floor, fire
+            7522, 5053, 4729, 5055, 5056,  # airflow / fans
+            7506, 4980, 5105, 4703,  # chilled water flow / valve
+            5113, 5121, 4714, 5500,  # shutdowns
+            5015, 5023, 5104, 4626, 7510, 7511,  # over temperatures
+            5106, 4300, 6236, 6237, 7503, 5068,  # pump high water, internal comm., power, heater
+        ),
+        State.CRIT,
+    ),
+    **dict.fromkeys((5109, 5110, 5111, 5117), State.OK),  # Unit On/Off/Standby, Maintenance Completed
+}
+
+# Cross checks (P3/P5): thresholds
+_FAN_STOPPED_PERCENT = 0.0
+_NO_FLOW = {4155: 0.05, 4158: 1.0}  # unit enum -> flow considered "no flow" (m3/h, l/min)
+_VALVE_OPEN_PERCENT = 20.0
 
 
 def _to_int(text: str) -> int | None:
@@ -287,6 +336,33 @@ class Section:
     data_points: Mapping[str, DataPoint]  # by item
     events: Sequence[Event]
     event_config: Mapping[str, EventConfig] = field(default_factory=dict)  # by event label (lower)
+    by_key: Mapping[str, DataPoint] = field(default_factory=dict)  # by "<data id>.<instance>"
+
+    def point(self, data_id: int, instance: int = 1) -> DataPoint | None:
+        return self.by_key.get(f"{data_id}.{instance}")
+
+    def valid_value(self, data_id: int, instance: int = 1) -> float | None:
+        p = self.point(data_id, instance)
+        return None if p is None or p.invalid_reason() else p.value
+
+    def valid_text(self, data_id: int) -> str | None:
+        p = self.point(data_id)
+        return None if p is None or p.invalid_reason() else p.text.strip().lower()
+
+    def instances(self, data_id: int) -> list[float]:
+        return [
+            p.value
+            for p in self.by_key.values()
+            if p.data_id == data_id and not p.invalid_reason() and p.value is not None
+        ]
+
+    def unit_running(self) -> bool | None:
+        """True/False if the unit reports its operating state, None if unknown."""
+        if (state := self.valid_text(7528)) is not None:  # System Operating State (FW 8.x)
+            return state == "run"
+        if (state := self.valid_text(4706)) is not None:  # Unit Operating State (FW 6.5)
+            return state == "on"
+        return None
 
 
 def _assign_items(points: list[DataPoint]) -> dict[str, DataPoint]:
@@ -374,10 +450,12 @@ def parse_vertiv_unity(string_table: list[StringTable]) -> Section | None:
     events = _parse_events([unit_events, module_events])
     if not points and not events:
         return None
+    data_points = _assign_items(points)
     return Section(
-        data_points=_assign_items(points),
+        data_points=data_points,
         events=events,
         event_config=_parse_event_config(points),
+        by_key={p.key: p for p in data_points.values()},
     )
 
 
@@ -525,27 +603,39 @@ def check_vertiv_unity_value(item: str, params: Mapping[str, object], section: S
         defaults = None  # unexpected unit: do not apply levels meant for another quantity
     used_defaults: list[str] = []
     levels: dict[str, object] = {}
+    warn_only: dict[str, float] = {}
     for key, default in (
         ("levels_upper", defaults.upper if defaults else None),
         ("levels_lower", defaults.lower if defaults else None),
     ):
+        direction = "upper" if key == "levels_upper" else "lower"
         if key in params:  # set by a rule (including an explicit "no levels")
             levels[key] = params[key]
+        elif default is not None and default[1] is None:
+            levels[key] = None
+            warn_only[key] = default[0]
+            used_defaults.append(f"{direction} warn {render(default[0])}")
         elif default is not None:
             levels[key] = ("fixed", default)
-            used_defaults.append(
-                f"{'upper' if key == 'levels_upper' else 'lower'} {render(default[0])}/{render(default[1])}"
-            )
+            used_defaults.append(f"{direction} {render(default[0])}/{render(default[1])}")  # type: ignore[arg-type]
         else:
             levels[key] = None
 
-    yield from check_levels(
+    for result in check_levels(
         value,
         levels_upper=levels["levels_upper"],  # type: ignore[arg-type]
         levels_lower=levels["levels_lower"],  # type: ignore[arg-type]
         metric_name=metric,
         render_func=render,
-    )
+    ):
+        if isinstance(result, Metric) and "levels_upper" in warn_only:
+            result = Metric(result.name, result.value, levels=(warn_only["levels_upper"], None))
+        yield result
+    if (warn := warn_only.get("levels_upper")) is not None and value >= warn:
+        yield Result(state=State.WARN, summary=f"at or above {render(warn)}")
+    if (warn := warn_only.get("levels_lower")) is not None and value < warn:
+        yield Result(state=State.WARN, summary=f"below {render(warn)}")
+    yield from _cross_checks(point, value, section)
     if used_defaults and defaults is not None:
         yield Result(
             state=State.OK,
@@ -555,7 +645,7 @@ def check_vertiv_unity_value(item: str, params: Mapping[str, object], section: S
             ),
         )
     discovered = params.get("discovered_value")
-    change_state = State(int(params.get("change_state", 0)))  # type: ignore[call-overload]
+    change_state = _change_state(point, params)
     if (
         change_state is not State.OK
         and isinstance(discovered, (int, float))
@@ -568,12 +658,39 @@ def check_vertiv_unity_value(item: str, params: Mapping[str, object], section: S
     yield Result(state=State.OK, notice=point.details())
 
 
-def _state_for(point: DataPoint, params: Mapping[str, object]) -> State:
+def _change_state(point: DataPoint, params: Mapping[str, object]) -> State:
+    """State for a value that differs from discovery: rule first, then built-in default."""
+    if "change_state" in params:
+        return State(int(params["change_state"]))  # type: ignore[call-overload]
+    return State.WARN if point.data_id in CHANGE_ALERT_IDS else State.OK
+
+
+def _cross_checks(point: DataPoint, value: float, section: Section) -> CheckResult:
+    """Checks that need other data points of the same unit (P3 fan stopped, P5 no flow)."""
+    if point.data_id == 5077 and value <= _FAN_STOPPED_PERCENT and section.unit_running():
+        yield Result(state=State.CRIT, summary="Fans stopped while the unit is running")
+    if (no_flow := _NO_FLOW.get(point.unit_enum)) is not None and value < no_flow:
+        valve = next(
+            (v for v in (section.valid_value(5640), section.valid_value(5078)) if v is not None),
+            None,
+        )
+        if valve is not None and valve >= _VALVE_OPEN_PERCENT:
+            yield Result(
+                state=State.CRIT,
+                summary=f"No water flow with chilled water valve open at {valve:.0f} %",
+            )
+
+
+def _state_for(point: DataPoint, params: Mapping[str, object], section: Section) -> tuple[State, str]:
     text = point.text.strip().lower()
     for entry in params.get("state_map", ()) or ():  # type: ignore[union-attr]
         if str(entry.get("value", "")).strip().lower() == text:
-            return State(int(entry.get("state", 0)))
-    return DEFAULT_STATE_MAPS.get(point.data_id, {}).get(text, State.OK)
+            return State(int(entry.get("state", 0))), ""
+    if point.data_id == 5382 and text == "off":  # Cooling State (P10)
+        if section.unit_running():
+            return State.WARN, "cooling off while the unit is running"
+        return State.OK, ""
+    return DEFAULT_STATE_MAPS.get(point.data_id, {}).get(text, State.OK), ""
 
 
 def check_vertiv_unity_state(item: str, params: Mapping[str, object], section: Section) -> CheckResult:
@@ -583,9 +700,10 @@ def check_vertiv_unity_state(item: str, params: Mapping[str, object], section: S
         yield from unavailable
         return
     code = f" (code {point.raw})" if point.raw is not None else ""
-    yield Result(state=_state_for(point, params), summary=f"{point.text.strip()}{code}")
+    state, reason = _state_for(point, params, section)
+    yield Result(state=state, summary=f"{point.text.strip()}{code}{f' – {reason}' if reason else ''}")
     discovered = params.get("discovered_value")
-    change_state = State(int(params.get("change_state", 0)))  # type: ignore[call-overload]
+    change_state = _change_state(point, params)
     if (
         change_state is not State.OK
         and isinstance(discovered, str)
@@ -621,6 +739,8 @@ def _event_state(event: Event, params: Mapping[str, object], section: Section) -
         return None, "disabled on unit"
     if config.severity and config.severity.lower() in _SEVERITY_STATES:
         return _SEVERITY_STATES[config.severity.lower()], f"unit severity {config.severity}"
+    if (state := DEFAULT_EVENT_STATES.get(event.code)) is not None:
+        return state, "built-in severity"
     return State(int(params.get("default_state", 1))), "default"  # type: ignore[call-overload]
 
 
@@ -654,6 +774,89 @@ def check_vertiv_unity_events(params: Mapping[str, object], section: Section) ->
     yield Metric("vertiv_unity_active_events", len(reported))
 
 
+# --------------------------------------------------------------------------------------------
+# Cooling control deviation (P8)
+# --------------------------------------------------------------------------------------------
+
+# FW 8.x "Water Valve Control Mode" (7505): <air>-<calculation> -> (set point id, average id, per-sensor id)
+_CONTROL_AIR = {
+    "supplyair": ("supply air", 5331, 5002, 8077),
+    "returnair": ("return air", 5333, 4291, 8078),
+    "remote": ("remote sensors", 8082, 5007, 5059),
+}
+
+
+@dataclass(frozen=True)
+class ControlTarget:
+    description: str
+    value: float
+    set_point: float
+
+
+def _calc(section: Section, average_id: int, sensor_id: int, calculation: str) -> float | None:
+    if calculation in ("max", "maximum"):
+        return max(section.instances(sensor_id), default=None)
+    if calculation in ("min", "minimum"):
+        return min(section.instances(sensor_id), default=None)
+    return section.valid_value(average_id)
+
+
+def _control_target(section: Section) -> ControlTarget | None:
+    # FW 6.5: "Air Temperature Control Sensor" (5012) + "Air Temperature Set Point" (5008)
+    if (sensor := section.valid_text(5012)) is not None:
+        set_point = section.valid_value(5008)
+        if sensor == "supply":
+            value, description = section.valid_value(5002), "supply air"
+        elif sensor == "return":
+            value, description = section.valid_value(4291), "return air"
+        else:  # remote
+            calculation = section.valid_text(5013) or "average"
+            value = _calc(section, 5007, 5059, calculation)
+            if calculation == "maximum" and value is None:
+                value = section.valid_value(5006)
+            description = f"remote sensors ({calculation})"
+        if value is not None and set_point is not None:
+            return ControlTarget(description, value, set_point)
+        return None
+    # FW 8.x: "Water Valve Control Mode" (7505), e.g. "SupplyAirAverageTemp"
+    if (mode := section.valid_text(7505)) is not None:
+        for prefix, (description, sp_id, avg_id, sensor_id) in _CONTROL_AIR.items():
+            if mode.startswith(prefix):
+                calculation = mode[len(prefix):].removesuffix("temp")  # average / max / min
+                value = _calc(section, avg_id, sensor_id, calculation)
+                set_point = section.valid_value(sp_id)
+                if value is not None and set_point is not None:
+                    return ControlTarget(f"{description} ({calculation})", value, set_point)
+        return None
+    return None
+
+
+def discover_vertiv_unity_control(section: Section) -> DiscoveryResult:
+    if _control_target(section) is not None:
+        yield Service()
+
+
+def check_vertiv_unity_control(params: Mapping[str, object], section: Section) -> CheckResult:
+    if (target := _control_target(section)) is None:
+        yield Result(state=State.UNKNOWN, summary="Control temperature or set point not available")
+        return
+    deviation = target.value - target.set_point
+    yield from check_levels(
+        deviation,
+        levels_upper=params.get("levels_upper"),  # type: ignore[arg-type]
+        metric_name="vertiv_unity_setpoint_deviation",
+        render_func=lambda v: f"{v:+.1f} K",
+        label="Deviation from set point",
+    )
+    yield Result(
+        state=State.OK,
+        summary=(
+            f"controlled {target.description}: {target.value:.1f} °C, "
+            f"set point {target.set_point:.1f} °C"
+        ),
+    )
+
+
 check_plugin_vertiv_unity_value = CheckPlugin(
     name="vertiv_unity_value",
     sections=["vertiv_unity"],
@@ -662,8 +865,9 @@ check_plugin_vertiv_unity_value = CheckPlugin(
     discovery_default_parameters=DISCOVERY_DEFAULTS,
     discovery_ruleset_name="vertiv_unity_discovery",
     check_function=check_vertiv_unity_value,
-    # No levels here on purpose: absent keys mean "use DEFAULT_LEVELS for this data point".
-    check_default_parameters={"change_state": 0},
+    # Empty on purpose: absent keys mean "use the built-in defaults for this data point"
+    # (DEFAULT_LEVELS, CHANGE_ALERT_IDS).
+    check_default_parameters={},
     check_ruleset_name="vertiv_unity_value",
 )
 
@@ -675,7 +879,7 @@ check_plugin_vertiv_unity_state = CheckPlugin(
     discovery_default_parameters=DISCOVERY_DEFAULTS,
     discovery_ruleset_name="vertiv_unity_discovery",
     check_function=check_vertiv_unity_state,
-    check_default_parameters={"state_map": [], "change_state": 0},
+    check_default_parameters={"state_map": []},
     check_ruleset_name="vertiv_unity_state",
 )
 
@@ -697,4 +901,14 @@ check_plugin_vertiv_unity_events = CheckPlugin(
     check_function=check_vertiv_unity_events,
     check_default_parameters={"default_state": 1, "event_states": []},
     check_ruleset_name="vertiv_unity_events",
+)
+
+check_plugin_vertiv_unity_control = CheckPlugin(
+    name="vertiv_unity_control",
+    sections=["vertiv_unity"],
+    service_name="Cooling Control Deviation",
+    discovery_function=discover_vertiv_unity_control,
+    check_function=check_vertiv_unity_control,
+    check_default_parameters={"levels_upper": ("fixed", (2.0, 4.0))},
+    check_ruleset_name="vertiv_unity_control",
 )

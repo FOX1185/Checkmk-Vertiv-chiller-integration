@@ -118,13 +118,17 @@ def test_metrics_per_unit():
     assert metric("Cooling Proportional Band").name == "vertiv_unity_temp_delta"
 
 
-def test_change_detection_only_when_enabled():
+def test_change_detection_defaults():
     s = section_of("crv300_fw6.5.0")
+    # set point: WARN on change by default
     params = {**VALUE_DEFAULTS, "discovered_value": 20.0}
-    assert worst(list(vu.check_vertiv_unity_value("Air Temperature Set Point", params, s))) is State.OK
-    params["change_state"] = 1
     res = list(vu.check_vertiv_unity_value("Air Temperature Set Point", params, s))
     assert worst(res) is State.WARN and "Changed since discovery (was 20.0 deg C)" in summary(res)
+    # disabled by rule
+    assert worst(list(vu.check_vertiv_unity_value("Air Temperature Set Point", {**params, "change_state": 0}, s))) is State.OK
+    # run-hour counters and proportional bands are not monitored for changes
+    assert worst(list(vu.check_vertiv_unity_value("Cooling Proportional Band",
+                                                  {"discovered_value": 9.9}, s))) is State.OK
 
 
 def test_value_becomes_unavailable_unknown():
@@ -267,9 +271,12 @@ def test_default_levels_per_quantity():
     assert levels(s602, "Remote Sensor Temperature 1") == (27.0, 32.0)
     assert levels(s300, "Return Dew Point") == (17.0, 20.0)
     assert levels(s300, "Supply Humidity") == (80.0, 90.0)
-    # no defaults for settings, counters and percentages
-    assert levels(s602, "Fan Speed") is None
+    assert levels(s602, "Fan Speed") == (95.0, None)  # warning only
+    assert levels(s602, "Chilled Water Valve Open Position") == (95.0, None)
+    assert levels(s300, "Cooling Capacity (Primary)") == (95.0, None)
+    # no defaults for settings, counters and other percentages
     assert levels(s602, "Fan Hours") is None
+    assert levels(s300, "Operating Efficiency") is None
     assert levels(s300, "Air Temperature Set Point") is None
 
 
@@ -279,3 +286,143 @@ def test_default_levels_not_applied_to_unexpected_unit():
     s = dataclasses.replace(s, data_points={**s.data_points, "Supply Air Temperature": point})
     res = list(vu.check_vertiv_unity_value("Supply Air Temperature", VALUE_DEFAULTS, s))
     assert next(m for m in res if isinstance(m, Metric)).levels == (None, None)
+
+
+# ---------------------------------------------------------------- 1.2.0: capacity, cross checks, states
+
+
+def _with_text(section, item, text, raw=None):
+    point = dataclasses.replace(section.data_points[item], text=text, raw=raw)
+    data = {**section.data_points, item: point}
+    return dataclasses.replace(section, data_points=data, by_key={p.key: p for p in data.values()})
+
+
+def _with_raw(section, item, raw):
+    point = section.data_points[item]
+    point = dataclasses.replace(point, raw=raw, text=str(raw / 10**point.decimals))
+    data = {**section.data_points, item: point}
+    return dataclasses.replace(section, data_points=data, by_key={p.key: p for p in data.values()})
+
+
+def _value_state(section, item, params=None):
+    return worst(list(vu.check_vertiv_unity_value(item, params or VALUE_DEFAULTS, section)))
+
+
+def test_fan_speed_capacity_warning():
+    s = section_of("crv602_fw8.4.7")
+    assert _value_state(_with_raw(s, "Fan Speed", 94), "Fan Speed") is State.OK
+    assert _value_state(_with_raw(s, "Fan Speed", 95), "Fan Speed") is State.WARN
+    assert _value_state(_with_raw(s, "Fan Speed", 100), "Fan Speed") is State.WARN  # never CRIT
+    assert _value_state(_with_raw(s, "Fan Speed", 100), "Fan Speed",
+                        {"levels_upper": ("no_levels", None)}) is State.OK
+
+
+def test_fan_stopped_while_running():
+    s = _with_raw(section_of("crv602_fw8.4.7"), "Fan Speed", 0)
+    assert _value_state(s, "Fan Speed") is State.CRIT  # System Operating State = Run
+    standby = _with_text(s, "System Operating State", "Standby", 1)
+    assert _value_state(standby, "Fan Speed") is State.OK
+    s300 = _with_raw(section_of("crv300_fw6.5.0"), "Fan Speed", 0)
+    assert _value_state(s300, "Fan Speed") is State.CRIT  # Unit Operating State = on
+
+
+def test_no_flow_with_open_valve():
+    s = section_of("crv602_fw8.4.7")
+    assert _value_state(s, "Fluid Flow Rate") is State.OK  # 0.3 m3/h, valve 38 %
+    no_flow = _with_raw(s, "Fluid Flow Rate", 0)
+    res = list(vu.check_vertiv_unity_value("Fluid Flow Rate", VALUE_DEFAULTS, no_flow))
+    assert worst(res) is State.CRIT and any("No water flow" in x for x in summary(res))
+    closed = _with_raw(no_flow, "Chilled Water Valve Open Position", 10)
+    assert _value_state(closed, "Fluid Flow Rate") is State.OK
+
+
+def test_voltage_defaults():
+    s = section_of("crv300_fw6.5.0")
+    an = "System Input RMS A-N"
+    ab = "System Input RMS A-B"
+    assert _value_state(_with_raw(s, an, 230), an) is State.OK
+    assert _value_state(_with_raw(s, an, 255), an) is State.WARN
+    assert _value_state(_with_raw(s, an, 190), an) is State.CRIT
+    assert _value_state(_with_raw(s, ab, 400), ab) is State.OK
+    assert _value_state(_with_raw(s, ab, 355), ab) is State.WARN
+    assert _value_state(_with_raw(s, ab, 470), ab) is State.CRIT
+
+
+def _state_state(section, item, params=None):
+    return worst(list(vu.check_vertiv_unity_state(item, params or STATE_DEFAULTS, section)))
+
+
+def test_state_maps_120():
+    s300 = section_of("crv300_fw6.5.0")
+    assert _state_state(_with_text(s300, "Unit Operating State", "off", 0), "Unit Operating State") is State.CRIT
+    assert _state_state(_with_text(s300, "System On/Off Control", "off", 0), "System On/Off Control") is State.CRIT
+    ats = "Automatic Transfer Switch - Active Power Supply"
+    assert _state_state(_with_text(s300, ats, "Power Supply 2", 1), ats) is State.WARN
+    assert _state_state(_with_text(s300, "Unit Control Mode", "External (Manual)", 1), "Unit Control Mode") is State.WARN
+    assert _state_state(_with_text(s300, "Fan Control Mode", "External (Manual)", 1), "Fan Control Mode") is State.WARN
+
+
+def test_cooling_state_off():
+    s = _with_text(section_of("crv602_fw8.4.7"), "Cooling State", "off", 0)
+    res = list(vu.check_vertiv_unity_state("Cooling State", STATE_DEFAULTS, s))
+    assert worst(res) is State.WARN and "running" in summary(res)[0]
+    standby = _with_text(s, "System Operating State", "Standby", 1)
+    assert _state_state(standby, "Cooling State") is State.OK
+
+
+def test_mode_change_warns_by_default():
+    s = section_of("crv602_fw8.4.7")
+    params = {**STATE_DEFAULTS, "discovered_value": "ReturnAirAverageTemp"}
+    assert _state_state(s, "Fan Control Mode", params) is State.WARN
+    assert _state_state(s, "Fan Control Mode", {**params, "change_state": 0}) is State.OK
+    # plain operating states are not change-monitored
+    assert _state_state(s, "Cooling State", {**STATE_DEFAULTS, "discovered_value": "off"}) is State.OK
+
+
+def test_event_builtin_severity():
+    base = load_walk(WALKS / "crv602_fw8.4.7")
+    def ev_state(end, params=EVENT_DEFAULTS):
+        s = vu.parse_vertiv_unity(string_tables(_activate(base, end)))
+        return worst(list(vu.check_vertiv_unity_events(params, s)))
+    assert ev_state(".1.2.100.4720.1") is State.CRIT  # Smoke Detected
+    assert ev_state(".1.2.100.7522.1") is State.CRIT  # Loss of Airflow
+    assert ev_state(".1.2.100.4729.3") is State.CRIT  # Fan Issue
+    assert ev_state(".1.2.100.5118.1") is State.WARN  # Clogged Air Filter -> default
+    assert ev_state(".1.2.100.4720.1", {**EVENT_DEFAULTS, "event_states": [{"code": "4720", "state": "warn"}]}) is State.WARN
+
+
+def test_event_unit_severity_prevails_over_builtin():
+    base = load_walk(WALKS / "crv300_fw6.5.0")
+    # Shutdown - Loss Of Power (4714) is CRIT built-in, but disabled on this unit -> ignored
+    s = vu.parse_vertiv_unity(string_tables(_activate(base, ".1.2.100.4714")))
+    assert worst(list(vu.check_vertiv_unity_events(EVENT_DEFAULTS, s))) is State.OK
+    # Unit On (5109) is informational -> OK
+    s = vu.parse_vertiv_unity(string_tables(_activate(base, ".1.2.100.5109")))
+    assert worst(list(vu.check_vertiv_unity_events(EVENT_DEFAULTS, s))) is State.OK
+
+
+CONTROL_DEFAULTS = vu.check_plugin_vertiv_unity_control.check_default_parameters
+
+
+def test_control_deviation_discovery_and_values():
+    s602, s300 = section_of("crv602_fw8.4.7"), section_of("crv300_fw6.5.0")
+    assert list(vu.discover_vertiv_unity_control(s602)) == [Service()]
+    assert list(vu.discover_vertiv_unity_control(s300)) == [Service()]
+    # CRC602: SupplyAirAverageTemp -> Supply Air Temperature 19.4 vs Supply SP 19.0
+    res = list(vu.check_vertiv_unity_control(CONTROL_DEFAULTS, s602))
+    assert Metric("vertiv_unity_setpoint_deviation", 19.4 - 19.0, levels=(2.0, 4.0)) in res or any(
+        isinstance(m, Metric) and abs(m.value - 0.4) < 1e-9 for m in res)
+    assert worst(res) is State.OK and "supply air (average)" in " ".join(summary(res))
+    # CRV300: control sensor Supply -> 21.2 vs Air Temperature Set Point 21.0
+    res = list(vu.check_vertiv_unity_control(CONTROL_DEFAULTS, s300))
+    assert worst(res) is State.OK and "set point 21.0" in " ".join(summary(res))
+
+
+def test_control_deviation_levels():
+    s = section_of("crv602_fw8.4.7")
+    assert worst(list(vu.check_vertiv_unity_control(CONTROL_DEFAULTS, _with_raw(s, "Supply Air Temperature", 215)))) is State.WARN
+    assert worst(list(vu.check_vertiv_unity_control(CONTROL_DEFAULTS, _with_raw(s, "Supply Air Temperature", 235)))) is State.CRIT
+    # max calculation uses the per-sensor values
+    s_max = _with_text(s, "Water Valve Control Mode", "SupplyAirMaxTemp", 4)
+    res = list(vu.check_vertiv_unity_control(CONTROL_DEFAULTS, s_max))
+    assert "supply air (max): 19.9" in " ".join(summary(res))

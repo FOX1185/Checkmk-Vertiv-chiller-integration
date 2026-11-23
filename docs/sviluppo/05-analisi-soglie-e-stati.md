@@ -131,3 +131,14 @@ Le bande proporzionali restano senza avviso. Dopo una modifica voluta basta rifa
 | D4 | Scostamento dal set point (P8), 2 K / 4 K | adottare |
 | D5 | Unità spenta = CRIT (P9), Cooling State (P10), ATS e modalità manuale (P11, P12) | adottare |
 | D6 | Tensioni d'ingresso (P6) | rimandare: oggi non disponibili sulle unità |
+
+## 6. Decisioni prese (realizzate nella 1.2.0)
+
+| # | Decisione |
+|---|---|
+| D1 | P1 adottata; la **severità configurata sulla scheda prevale** sulla tabella predefinita |
+| D2 | P2, P3, P4, P5 adottate |
+| D3 | P7 adottata (escluse le bande proporzionali) |
+| D4 | P8 adottata: servizio `Cooling Control Deviation`, 2 K / 4 K |
+| D5 | P9, P10, P11, P12 adottate |
+| D6 | P6 adottata: 230 V F-N e 400 V F-F, WARN ±10 %, CRIT ±15 %; se non disponibili non diventano servizi, oppure si escludono con la regola di discovery |

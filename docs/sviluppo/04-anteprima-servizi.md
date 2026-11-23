@@ -1,6 +1,6 @@
 # Anteprima dei servizi (simulazione sui walk reali)
 
-Generata con `tools/preview_services.py` (versione 1.1.0), parametri predefiniti, nessuna regola utente.
+Generata con `tools/preview_services.py` (versione 1.2.0), parametri predefiniti, nessuna regola utente.
 
 ## crv602_fw8.4.7
 
@@ -46,6 +46,7 @@ Generata con `tools/preview_services.py` (versione 1.1.0), parametri predefiniti
 | System Serial Number | testo | OK | CRC602-XXXXX | |
 | Firmware Version | testo | OK | 1.03.000.00 | |
 | PACC Controller Firmware Version | testo | OK | 1.03.000.00 | |
+| Cooling Control Deviation | regolazione | OK | Deviation from set point: +0.4 K; controlled supply air (average): 19.4 °C, set point 19.0 °C | vertiv_unity_setpoint_deviation |
 | Events | eventi | OK | No active events (61 monitored) | vertiv_unity_active_events |
 
 ## crv300_fw6.5.0
@@ -110,4 +111,5 @@ Generata con `tools/preview_services.py` (versione 1.1.0), parametri predefiniti
 | System Model Number | testo | OK | Liebert CRV | |
 | System Date and Time | testo | OK | 2026-11-23 15:25:51 | |
 | System Name | testo | OK | UNIT-1 | |
+| Cooling Control Deviation | regolazione | OK | Deviation from set point: +0.2 K; controlled supply air: 21.2 °C, set point 21.0 °C | vertiv_unity_setpoint_deviation |
 | Events | eventi | OK | No active events (89 monitored) | vertiv_unity_active_events |

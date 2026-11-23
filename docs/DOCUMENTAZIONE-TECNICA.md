@@ -1,4 +1,4 @@
-# Documentazione tecnica – plugin `vertiv_unity` 1.1.0
+# Documentazione tecnica – plugin `vertiv_unity` 1.2.0
 
 Plugin SNMP per **Checkmk 2.5** che monitora le unità di condizionamento Vertiv/Liebert dotate di scheda
 **IntelliSlot Unity**. Questo documento descrive:
@@ -16,7 +16,7 @@ singole fasi sono in [sviluppo/](sviluppo/).
 
 | Voce | Valore |
 |---|---|
-| Versione | 1.1.0 (file `VERSION`) |
+| Versione | 1.2.0 (file `VERSION`) |
 | Checkmk | 2.5.0 o superiore (sviluppato e verificato su Community 2.5.0p12, Docker, core Nagios) |
 | Dispositivi verificati | Liebert CRV300 – Unity FW 6.5.0; Liebert CRC602 (indicato in progetto come "CRV602") – Unity FW 8.4.7 |
 | Dispositivi previsti | Liebert CRV25 (Unity FW 7.8.0) – non ancora verificato; in generale qualunque unità con scheda Unity che espone la tabella Flexible |
@@ -31,9 +31,10 @@ singole fasi sono in [sviluppo/](sviluppo/).
 | Un servizio per parametro | un servizio per data point (numerico, enum, testo) |
 | Grafici e perfdata | metrica per ogni numerico, scelta in base all'unità |
 | Soglie configurabili | soglie predefinite per aria, acqua, umidità e rugiada (§5.1); regola "Vertiv Unity – numeric parameters" per servizio |
-| Stati per enum e testi | mappe di stato predefinite e regola "Vertiv Unity – states and modes" |
+| Stati per enum e testi | mappe di stato predefinite (§5.2), avviso su modifica delle impostazioni, regola "Vertiv Unity – states and modes" |
 | Esclusione dei valori non validi | regole di validità (§5): non scoperti; UNKNOWN se diventano non validi |
-| Servizio eventi con descrizione | servizio `Events` con etichetta, codice, istanza e severità |
+| Servizio eventi con descrizione | servizio `Events` con etichetta, codice, istanza e severità (scheda, poi tabella predefinita, §5.3) |
+| Funzioni importanti con WARN/CRIT | soglie, stati, eventi e controlli incrociati predefiniti; servizio `Cooling Control Deviation` (§5.4) |
 
 ---
 
@@ -139,6 +140,7 @@ SNMP (bulkwalk) ──► snmp_section_vertiv_unity ──► parse_vertiv_unity
 | `vertiv_unity_state` | `%s` | enum validi, escluse le coppie Event Control/Type | `state_map`, `change_state` |
 | `vertiv_unity_text` | `%s` | text/ipv4/time32 non vuoti | nessuno |
 | `vertiv_unity_events` | `Events` | se esistono data point evento | `default_state`, `event_states` |
+| `vertiv_unity_control` | `Cooling Control Deviation` | se sensore di controllo, temperatura e set point sono leggibili | `levels_upper` (predefinito 2 / 4 K) |
 
 Nome del servizio: l'etichetta della scheda; se il data ID ha più istanze, segue il numero di istanza
 (`Supply Air Sensor Temperature 2`). Se due data ID diversi avessero la stessa etichetta (non accade sui walk
@@ -151,6 +153,7 @@ reali), al nome si aggiunge il data ID tra parentesi.
 | `vertiv_unity_value` | Vertiv Unity – numeric parameters | CheckParameters | host + nome servizio |
 | `vertiv_unity_state` | Vertiv Unity – states and modes | CheckParameters | host + nome servizio |
 | `vertiv_unity_events` | Vertiv Unity – events | CheckParameters | host |
+| `vertiv_unity_control` | Vertiv Unity – cooling control deviation | CheckParameters | host |
 | `vertiv_unity_discovery` | Vertiv Unity discovery | DiscoveryParameters | host |
 
 ### 3.5 Metriche
@@ -169,6 +172,7 @@ reali), al nome si aggiunge il data ID tra parentesi.
 | kW 4115 / kWh 4117 | `vertiv_unity_power_kw` / `vertiv_unity_energy_kwh` | plugin |
 | altre / nessuna | `vertiv_unity_value` | plugin |
 | — | `vertiv_unity_active_events` | plugin |
+| — | `vertiv_unity_setpoint_deviation` (K) | plugin |
 
 ---
 
@@ -224,6 +228,9 @@ Definite in `DEFAULT_LEVELS` (data ID → profilo) nel file `agent_based/vertiv_
 | Punto di rugiada | Return Dew Point (5004) | 17 / 20 °C | −9 / −12 °C | ASHRAE A1: rugiada massima 17 °C ammessa, minima −9 °C |
 | Acqua refrigerata in ingresso all'unità | Chilled Water Inlet Temperature (6311), Supply Fluid Temperature (4624) | 20 / 25 °C | 5 / 3 °C | mandata tipica 7–20 °C; più calda riduce la capacità frigorifera, sotto 5 °C c'è rischio di gelo senza glicole |
 | Acqua refrigerata in uscita dall'unità | Chilled Water Outlet Temperature (6312), Outlet Chilled Water Temperature (5668) | 26 / 30 °C | 5 / 3 °C | ritorno tipico: mandata + 5…6 °C |
+| Riserva di capacità | Fan Speed (5077), Chilled Water Valve Open Position (5640), Cooling Capacity (Primary) (5078) | solo WARN ≥ 95 % | — | unità al limite, senza riserva (dalla 1.2.0) |
+| Tensione F-N | 4096, 4098, 4100 | 253 / 264.5 V | 207 / 195.5 V | 230 V ±10 % / ±15 % (EN 50160) (dalla 1.2.0) |
+| Tensione F-F | 4097, 4099, 4101 | 440 / 460 V | 360 / 340 V | 400 V ±10 % / ±15 % (dalla 1.2.0) |
 
 Logica in `check_vertiv_unity_value`:
 - per ciascuna soglia (superiore, inferiore), se la regola contiene la chiave (`levels_upper`/`levels_lower`)
@@ -232,7 +239,64 @@ Logica in `check_vertiv_unity_value`:
   `humidity`);
 - quando si usano soglie predefinite, i dettagli del servizio lo indicano.
 
-Per questo, dalla 1.1.0 `check_default_parameters` non contiene più `levels_upper`/`levels_lower`.
+Una soglia con CRIT `None` è "solo WARN": la metrica riporta `levels=(warn, None)` e il WARN si genera a
+parte, perché `check_levels` richiede sempre una coppia.
+
+Per questo, dalla 1.1.0 `check_default_parameters` non contiene più `levels_upper`/`levels_lower`, e dalla
+1.2.0 nemmeno `change_state`.
+
+### 5.2 Stati e avviso su modifica (dalla 1.2.0)
+
+- **`DEFAULT_STATE_MAPS`:**
+  - 4706 e 5143 off → CRIT;
+  - 5672 Power Supply 2 → WARN;
+  - 4707 e 5047 External (Manual) → WARN;
+  - invariati 4123, 7528, 5673/5674.
+- **Cooling State (5382), mappa dinamica:** off → WARN se `unit_running()` è vero, cioè 7528 = Run oppure
+  4706 = on; altrimenti OK.
+- **`CHANGE_ALERT_IDS`:** dati per cui `change_state` vale WARN se la regola non lo imposta:
+  - set point: 5008, 5331, 5333, 8082, 5029;
+  - soglie della scheda: 5014, 5018, 5022, 4625, 5033, 5035;
+  - ventilatori: 5049, 5050, 5051;
+  - modalità e sensori: 5012, 5013, 5052, 5047, 4707, 7505, 7516, 5058, 7529.
+
+  Il valore di riferimento è `discovered_value`, salvato alla discovery.
+
+### 5.3 Severità degli eventi (dalla 1.2.0)
+
+Ordine di valutazione in `_event_state`:
+1. regola per codice o istanza;
+2. evento disabilitato sulla scheda → ignorato;
+3. severità della scheda (`Event Type`: Message/Warning/Alarm), che **prevale sulla tabella**
+   (decisione dell'utente);
+4. `DEFAULT_EVENT_STATES`:
+   - **CRIT** per 28 codici: fumo, acqua, incendio, flusso d'aria, ventole, flusso acqua, valvola, arresti,
+     sovratemperature, pompa condensa, comunicazione interna, alimentazione, riscaldatore;
+   - **OK** per 5109, 5110, 5111, 5117;
+5. `default_state` (WARN).
+
+Tutti i codici della tabella sono verificati nei file di mapping delle due unità.
+
+### 5.4 Controlli incrociati e regolazione (dalla 1.2.0)
+
+`Section` indicizza i data point per chiave (`by_key`) e offre `valid_value`, `valid_text`, `instances` e
+`unit_running`. I controlli incrociati non richiedono letture SNMP aggiuntive.
+
+| Controllo | Condizione | Stato |
+|---|---|---|
+| Ventole ferme (P3) | 5077 ≤ 0 % e `unit_running()` | CRIT sul servizio Fan Speed |
+| Assenza di flusso (P5) | portata < 0.05 m³/h (4155) o < 1 l/min (4158), con 5640 o 5078 ≥ 20 % | CRIT sul servizio della portata |
+| Scostamento dal set point (P8) | temperatura regolata − set point > 2 / 4 K | WARN / CRIT sul servizio `Cooling Control Deviation` |
+
+Come si ricava la temperatura regolata (`_control_target`):
+- **FW 6.5:** 5012 = Supply / Return / Remote, set point 5008. Per Remote il calcolo è letto da 5013:
+  media 5007, oppure massimo dei 5059 (fallback 5006).
+- **FW 8.x:** 7505 = `<SupplyAir|ReturnAir|Remote><Average|Max|Min>Temp`, con set point 5331 / 5333 / 8082.
+  - media: 5002 / 4291 / 5007;
+  - massimo/minimo: calcolato sulle istanze valide di 8077 / 8078 / 5059.
+- **Altri modelli o modalità** (es. sensore di controllo non leggibile): il servizio non viene creato.
+  Se smette di essere calcolabile dopo la discovery → UNKNOWN.
+
 
 ---
 
@@ -257,6 +321,11 @@ Per questo, dalla 1.1.0 `check_default_parameters` non contiene più `levels_upp
 | `lgp_info` ("Liebert Info") non sostituito | Mostra l'identità della scheda (modello, FW, seriale), che il plugin non legge. |
 | Mappe di stato predefinite solo per pochi enum | Le uniche con semantica chiara (System Status, Operating State, ATS). Gli altri enum sono informativi. |
 | Nessun nome simbolico MIB negli eventi | Etichetta e codice bastano; evita di incorporare 1450 nomi nel plugin. |
+| Severità della scheda prima della tabella predefinita (1.2.0) | La configurazione della scheda è una scelta esplicita di chi gestisce l'impianto (decisione dell'utente). La tabella copre i firmware che non espongono la severità. |
+| Ventole e valvola al 95 %: solo WARN | Non è un guasto ma assenza di riserva. I guasti (ventola ferma, perdita di flusso) sono CRIT tramite eventi e controlli incrociati. |
+| Controlli incrociati invece di soglie assolute su portata e ventole | La portata nominale dipende dalla taglia; "nessun flusso con valvola aperta" e "ventole ferme con unità in marcia" sono validi per qualunque unità. |
+| Scostamento solo verso l'alto | Raffreddare più del necessario non è un rischio per l'IT; le basse temperature assolute restano coperte dalle soglie dell'aria. |
+| Tensioni 230/400 V ±10 %/±15 % | Decisione dell'utente; reti diverse (es. 208/480 V) richiedono una regola. Le tensioni diventano servizi solo se il misuratore è installato. |
 
 ---
 
@@ -294,9 +363,11 @@ Esecuzione:
 CMK_PLUGIN_APIS=<checkmk>/packages/cmk-plugin-apis python3 -m pytest tests
 ```
 
-Esito della versione 1.1.0: **32 test superati** (4 nuovi sulle soglie predefinite: applicazione,
-sovrascrittura per regola, profili per grandezza, protezione contro un'unità inattesa). Verifica sul campo: discovery reale sul CRV602 con
-41 servizi (26 numerici, 10 stati, 4 testi, 1 eventi), come previsto dalla simulazione
+Esito della versione 1.2.0: **44 test superati**. Coprono soglie predefinite e solo WARN, controlli incrociati
+(ventole ferme, assenza di flusso), tensioni, nuove mappe di stato, Cooling State dinamico, avviso su
+modifica, severità degli eventi (tabella e precedenza della scheda) e il servizio Cooling Control Deviation
+su entrambi i firmware. Verifica sul campo: discovery reale sul CRV602 con
+41 servizi (26 numerici, 10 stati, 4 testi, 1 eventi; dalla 1.2.0 anche Cooling Control Deviation), come previsto dalla simulazione
 ([sviluppo/04-anteprima-servizi.md](sviluppo/04-anteprima-servizi.md)).
 
 Strumenti di supporto in `tools/`:
