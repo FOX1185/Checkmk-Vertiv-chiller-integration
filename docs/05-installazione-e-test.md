@@ -30,10 +30,15 @@ docker exec -u root <container> chown -R cmk:cmk /omd/sites/cmk/local/lib/python
 Poi, come utente del sito:
 
 ```bash
-docker exec -it -u cmk <container> bash -lc 'cmk -R && omd restart apache'
+docker exec -it -u cmk <container> bash -lc 'omd restart && cmk -L | grep vertiv'
 ```
 
-`cmk -R` carica i plugin di check; il riavvio di apache serve all'interfaccia web per vedere regole e metriche.
+Devono comparire 4 plugin (`vertiv_unity_events`, `_state`, `_text`, `_value`).
+
+**Serve `omd restart`, non basta `cmk -R`:** l'interfaccia web esegue discovery e controlli tramite
+l'*automation helper*, che tiene in memoria i plugin caricati all'avvio. Con il solo `cmk -R` la discovery
+dalla GUI non trova nulla, oppure mostra "Unimplemented check vertiv_unity_… / Check plug-in not
+implemented". Il riavvio va ripetuto a ogni aggiornamento del plugin.
 
 ## 3. Prova senza toccare le unità reali (consigliata)
 
