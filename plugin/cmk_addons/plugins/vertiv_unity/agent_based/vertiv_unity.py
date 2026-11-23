@@ -17,8 +17,6 @@ Index layout (verified on CRV300 FW 6.5.0 and CRC/CRV602 FW 8.4.7):
   1.3.20.100.<id>          sensor module events                (read)
 """
 
-from __future__ import annotations
-
 from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
@@ -326,7 +324,9 @@ def _parse_event_config(points: Sequence[DataPoint]) -> dict[str, EventConfig]:
     return config
 
 
-def parse_vertiv_unity(string_table: Sequence[StringTable]) -> Section | None:
+def parse_vertiv_unity(string_table: list[StringTable]) -> Section | None:
+    # Checkmk 2.5 validates this annotation when loading the plug-in: an SNMP section with
+    # several trees must declare exactly list[StringTable] (and no postponed annotations).
     points_table, unit_events, module_events = string_table
     points = _parse_points(points_table)
     events = _parse_events([unit_events, module_events])
@@ -354,15 +354,16 @@ _POINT_COLUMNS = (
     "30.1.50",  # lgpFlexibleEntryAccessibility
     "30.1.60",  # lgpFlexibleEntryUnitsOfMeasureEnum
 )
-_EVENT_COLUMNS = ("20.1.10", "20.1.20")
+_EVENT_COLUMNS = ("10", "20")  # relative to lgpFlexibleBasicEntry (.20.1)
 
 snmp_section_vertiv_unity = SNMPSection(
     name="vertiv_unity",
     detect=DETECT_VERTIV_UNITY,
     fetch=[
         SNMPTree(base=_FLEX, oids=[OIDEnd(), *_columns("1.2.1", _POINT_COLUMNS)]),
-        SNMPTree(base=_FLEX, oids=[OIDEnd(), *_columns("1.2.100", _EVENT_COLUMNS)]),
-        SNMPTree(base=_FLEX, oids=[OIDEnd(), *_columns("1.3.20.100", _EVENT_COLUMNS)]),
+        # Checkmk requires the longest common base, hence ".20.1" for the event trees
+        SNMPTree(base=f"{_FLEX}.20.1", oids=[OIDEnd(), *_columns("1.2.100", _EVENT_COLUMNS)]),
+        SNMPTree(base=f"{_FLEX}.20.1", oids=[OIDEnd(), *_columns("1.3.20.100", _EVENT_COLUMNS)]),
     ],
     parse_function=parse_vertiv_unity,
     # The built-in liebert_* plug-ins read single rows of the same table and would create
