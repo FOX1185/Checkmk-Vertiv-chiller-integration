@@ -1,4 +1,4 @@
-# Fase 4 – Progettazione del plugin (proposta da approvare)
+# Fase 4 – Progettazione del plugin (approvata, implementata)
 
 **Target:** Checkmk Community 2.5.0p12. API verificate sul tag `v2.5.0p12` del sorgente Checkmk:
 `cmk.agent_based.v2`, `cmk.rulesets.v1`, `cmk.graphing.v1`, plug-in in `cmk_addons.plugins`.
@@ -151,3 +151,24 @@ Regola *"Vertiv Unity – discovery"* (per host):
   °F nel ramo primario.
 - Simulazione in Checkmk con `cmk --snmpwalk` già salvati (host in modalità simulazione) prima del
   collegamento alle unità reali.
+
+## 9. Decisioni dell'utente e modifiche in implementazione
+
+| Punto | Decisione |
+|---|---|
+| Parametri di configurazione | servizi (con grafico per i numerici) |
+| Evento attivo senza severità nota | **WARN** |
+| Mappe di stato | come proposte (§5.2), da rivedere dopo l'esercizio |
+| Nome servizi | senza prefisso: `Return Air Temperature`; servizio eventi: `Events` |
+
+Modifiche rispetto alla proposta:
+
+- **Sezione identità non letta:** il plugin Checkmk `lgp_info` ("Liebert Info") mostra già produttore,
+  modello, firmware e seriale della scheda.
+- **Plugin `liebert_*` di Checkmk sostituiti** (`supersedes`): leggono singole righe della stessa tabella e
+  creerebbero servizi duplicati.
+- **Nome simbolico MIB degli eventi non mostrato:** etichetta e codice evento sono sufficienti ed evitano di
+  incorporare 1450 nomi nel plugin.
+- **Le soglie si esprimono nell'unità mostrata dal servizio** (°C, %, h, m³/h, kW…); unica conversione:
+  °F → °C, per uniformità con la metrica `temp`.
+- **"Cambiato rispetto alla discovery"** è disattivato di default e si attiva per servizio con le regole.
