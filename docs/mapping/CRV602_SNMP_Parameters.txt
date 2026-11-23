@@ -1,0 +1,233 @@
+lgpAgentIdentManufacturer,1.3.6.1.4.1.476.1.42.2.1.1.0
+lgpAgentIdentModel,1.3.6.1.4.1.476.1.42.2.1.2.0
+lgpAgentIdentFirmwareVersion,1.3.6.1.4.1.476.1.42.2.1.3.0
+lgpAgentIdentSerialNumber,1.3.6.1.4.1.476.1.42.2.1.4.0
+lgpAgentIdentPartNumber,1.3.6.1.4.1.476.1.42.2.1.5.0
+lgpAgentReboot,1.3.6.1.4.1.476.1.42.2.5.1.0
+lgpSysState,1.3.6.1.4.1.476.1.42.3.7.2.2.0
+System Status,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.4123.1
+ Possible states for the OID above:
+  1: "Normal Operation"
+  2: "StartUp"
+  8: "Normal with Warning"
+  16: "Normal with Alarm"
+  32: "Abnormal Operation"
+System Model Number,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.4240.1
+System Serial Number,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.4244.1
+Return Air Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.4291.1
+Firmware Version,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.4335.1
+PACC Controller Firmware Version,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.4400.1
+Server Class,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.4553.1
+ Possible states for the OID above:
+  1: "UPS"
+  2: "AIR"
+  3: "PMP"
+  4: "PDU"
+  5: "MONITOR"
+Supply Air Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5002.1
+Remote Sensor Average Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5007.1
+Cooling Proportional Band,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5009.1
+Return Humidity,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5028.1
+Humidity Set Point,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5029.1
+Humidification Proportional Band,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5030.1
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5059.1
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5059.2
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5059.3
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5059.4
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5059.5
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5059.6
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5059.7
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5059.8
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5059.9
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5059.10
+Fan Speed,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5077.1
+Supply Air Temperature Set Point,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5331.1
+Return Air Temperature Set Point,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5333.1
+Electric Reheater Hours,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5366.1
+Humidifier Hours,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5369.1
+Fan Hours,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5374.1
+Cooling State,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5382.1
+ Possible states for the OID above:
+  0: "off"
+  1: "on"
+Electric Reheat State,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5386.1
+ Possible states for the OID above:
+  0: "off"
+  1: "on"
+Dehumidifier State,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5387.1
+ Possible states for the OID above:
+  0: "off"
+  1: "on"
+Humidifier State,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5388.1
+ Possible states for the OID above:
+  0: "off"
+  1: "on"
+Chilled Water Valve Hours,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5614.1
+Chilled Water Valve Open Position,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5640.1
+Fluid Flow Rate,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.5899.1
+Chilled Water Inlet Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.6311.1
+Chilled Water Outlet Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.6312.1
+Water Valve Control Mode,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.7505.1
+ Possible states for the OID above:
+  0: "ReturnAirAverageTemp"
+  1: "ReturnAirMaxTemp"
+  2: "ReturnAirMinTemp"
+  3: "SupplyAirAverageTemp"
+  4: "SupplyAirMaxTemp"
+  5: "SupplyAirMinTemp"
+  6: "RemoteAverageTemp"
+  7: "RemoteMaxTemp"
+  8: "RemoteMinTemp"
+Fan Control Mode,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.7516.1
+ Possible states for the OID above:
+  0: "ReturnAirAverageTemp"
+  1: "ReturnAirMaxTemp"
+  2: "ReturnAirMinTemp"
+  3: "SupplyAirAverageTemp"
+  4: "SupplyAirMaxTemp"
+  5: "SupplyAirMinTemp"
+  6: "RemoteAverageTemp"
+  7: "RemoteMaxTemp"
+  8: "RemoteMinTemp"
+  9: "TemperatureDiff"
+  10: "StaticPressure"
+Air Filter Hours,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.7521.1
+Fan Static Pressure,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.7527.1
+System Operating State,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.7528.1
+ Possible states for the OID above:
+  0: "Run"
+  1: "Standby"
+  2: "Display Off"
+  3: "Remote Off"
+  4: "Monitoring Off"
+  5: "Lockout"
+Teamwork Status,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.7529.1
+ Possible states for the OID above:
+  0: "Single"
+  1: "TeamworkMode0"
+  2: "TeamworkMode1"
+  3: "TeamworkMode2"
+  4: "TeamworkMode3"
+Monitoring ON/OFF,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.7536.1
+ Possible states for the OID above:
+  16: "on"
+  31: "off"
+Supply Air Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.8077.1
+Supply Air Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.8077.2
+Supply Air Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.8077.3
+Return Air Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.8078.1
+Return Air Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.8078.2
+Return Sensor Humidity,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.8080.1
+Remote Sensor Air Temperature Set Point,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.8082.1
+Supply Air Theoretical Humidity,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.8090.1
+Condensate Pump Hours,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.1.8122.1
+Return Air Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.4291.1
+Supply Air Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5002.1
+Remote Sensor Average Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5007.1
+Cooling Proportional Band,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5009.1
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5059.1
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5059.2
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5059.3
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5059.4
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5059.5
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5059.6
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5059.7
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5059.8
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5059.9
+Remote Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5059.10
+Supply Air Temperature Set Point,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5331.1
+Return Air Temperature Set Point,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.5333.1
+Chilled Water Inlet Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.6311.1
+Chilled Water Outlet Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.6312.1
+Supply Air Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.8077.1
+Supply Air Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.8077.2
+Supply Air Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.8077.3
+Return Air Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.8078.1
+Return Air Sensor Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.8078.2
+Remote Sensor Air Temperature Set Point,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.2.8082.1
+Internal Communications Failure,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4300.1
+Smoke Detected,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4720.1
+Water Under Floor,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4723.1
+Fan Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4729.1
+Fan Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4729.2
+Fan Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4729.3
+Fan Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4729.4
+Fan Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4729.5
+Fan Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4729.6
+Fan Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4729.7
+Fan Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4729.8
+Fan Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4729.9
+Fan Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.4729.10
+Supply Air Over Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5015.1
+Supply Air Under Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5019.1
+Return Air Over Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5023.1
+Supply Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5026.1
+Supply Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5026.2
+Supply Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5026.3
+High Return Humidity,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5034.1
+Low Return Humidity,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5036.1
+Humidifier Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5043.1
+Ext Condenser Pump High Water,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5106.1
+External Fire Detected,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5108.1
+Clogged Air Filter,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5118.1
+Return Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5147.1
+Return Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5147.2
+Return Air Under Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5335.1
+Ext Remote Shutdown,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5500.1
+Remote Sensor Over Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5597.1
+Remote Sensor Under Temperature,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5598.1
+Return Humidity Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.5902.1
+Chilled Water Inlet Temperature Sensor Failure,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.6313.1
+Chilled Water Outlet Temperature Sensor Failure,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.6314.1
+External Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7495.1
+External Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7495.2
+External Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7495.3
+External Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7495.4
+External Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7495.5
+External Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7495.6
+External Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7495.7
+External Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7495.8
+External Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7495.9
+External Air Sensor Issue,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7495.10
+Electrical Heater Failure,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7503.1
+Supply Fluid Low Flow,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7506.1
+Outlet Fluid Under Temp,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7509.1
+Outlet Fluid Over Temp,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7510.1
+Inlet Fluid Over Temp,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7511.1
+Inlet Fluid Under Temp,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7512.1
+Loss of Airflow,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7522.1
+Teamwork Master is offline or not connected to the network,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7523.1
+Loss of Teamwork Slave,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7524.1
+Repeated Teamwork Address,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7525.1
+Filter Maintenance Due,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7537.1
+Water Flow Sensor Failure,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7558.1
+Custom Alarm,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7561.1
+Fan Static Pressure Sensor Failure,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.7563.1
+10DI Sensor Communication Fail,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.2.100.8072.1
+System Status,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.4123
+ Possible states for the OID above:
+  1: "Normal Operation"
+  2: "StartUp"
+  8: "Normal with Warning"
+  16: "Normal with Alarm"
+  32: "Abnormal Operation"
+System Model Number,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.4240
+Server Class,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.4553
+ Possible states for the OID above:
+  1: "UPS"
+  2: "AIR"
+  3: "PMP"
+  4: "PDU"
+  5: "MONITOR"
+Sensor Order Identifier - Slot 01,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.6109
+Sensor Order Identifier - Slot 02,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.6110
+Sensor Order Identifier - Slot 03,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.6111
+Sensor Order Identifier - Slot 04,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.6112
+Sensor Order Identifier - Slot 05,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.6113
+Sensor Order Identifier - Slot 06,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.6114
+Sensor Order Identifier - Slot 07,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.6115
+Sensor Order Identifier - Slot 08,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.6116
+Sensor Order Identifier - Slot 09,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.6117
+Sensor Order Identifier - Slot 10,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.1.6118
+Too Many Sensors,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.100.5423
+Slots not available,1.3.6.1.4.1.476.1.42.3.9.20.1.20.1.3.20.100.6119
