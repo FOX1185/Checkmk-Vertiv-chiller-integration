@@ -2,6 +2,25 @@
 
 Formato: [Keep a Changelog](https://keepachangelog.com/it/1.1.0/), versionamento semantico.
 
+## [1.1.0] – 2026-11-23
+
+### Aggiunto
+- **Soglie predefinite** per i parametri numerici con riferimenti riconosciuti (ASHRAE TC 9.9, prassi per
+  l'acqua refrigerata):
+  - aria di mandata e sensori ai rack: 27/32 °C, 15/12 °C;
+  - aria di ripresa: 40/45 °C;
+  - umidità di ripresa: 70/80 %, 20/15 %;
+  - umidità di mandata: 80/90 %, 20/15 %;
+  - punto di rugiada: 17/20 °C, −9/−12 °C;
+  - acqua refrigerata in ingresso: 20/25 °C, 5/3 °C;
+  - acqua refrigerata in uscita: 26/30 °C, 5/3 °C.
+- Nei dettagli del servizio è indicato quando sono in uso le soglie predefinite.
+
+### Modificato
+- Regola *Vertiv Unity – numeric parameters*: ogni soglia configurata sostituisce quella predefinita;
+  "No levels" la disattiva.
+- Nessuna nuova discovery necessaria: dopo l'aggiornamento le soglie si applicano ai servizi esistenti.
+
 ## [1.0.0] – 2026-11-23
 
 Prima versione.

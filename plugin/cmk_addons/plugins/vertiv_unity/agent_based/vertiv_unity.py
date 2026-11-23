@@ -117,6 +117,48 @@ _UNIT_METRICS: Mapping[int, tuple[str, str, float, float]] = {
 _GENERIC_METRIC = "vertiv_unity_value"
 
 
+@dataclass(frozen=True)
+class DefaultLevels:
+    """Built-in levels, used when no rule sets levels_upper / levels_lower for the service."""
+
+    profile: str
+    metric: str  # levels only apply if the data point really maps to this metric
+    upper: tuple[float, float] | None
+    lower: tuple[float, float] | None
+
+
+# References: ASHRAE TC 9.9 thermal guidelines (class A1: recommended inlet 18-27 °C, allowable
+# 15-32 °C, max dew point 15 °C recommended / 17 °C allowable, RH up to 60 % recommended /
+# 80 % allowable, min dew point -9 °C) and usual chilled-water practice (supply 7-20 °C).
+_AIR_INLET = DefaultLevels("air inlet / supply (ASHRAE A1)", "temp", (27.0, 32.0), (15.0, 12.0))
+_AIR_RETURN = DefaultLevels("return / hot aisle air", "temp", (40.0, 45.0), None)
+_RH_RETURN = DefaultLevels("return air humidity", "humidity", (70.0, 80.0), (20.0, 15.0))
+_RH_SUPPLY = DefaultLevels("supply air humidity", "humidity", (80.0, 90.0), (20.0, 15.0))
+_DEW_POINT = DefaultLevels("dew point (ASHRAE A1)", "temp", (17.0, 20.0), (-9.0, -12.0))
+_CW_SUPPLY = DefaultLevels("chilled water supply", "temp", (20.0, 25.0), (5.0, 3.0))
+_CW_RETURN = DefaultLevels("chilled water return", "temp", (26.0, 30.0), (5.0, 3.0))
+
+DEFAULT_LEVELS: Mapping[int, DefaultLevels] = {
+    5002: _AIR_INLET,  # Supply Air Temperature
+    8077: _AIR_INLET,  # Supply Air Sensor Temperature (per sensor)
+    5005: _AIR_INLET,  # Remote Sensor Minimum Temperature
+    5006: _AIR_INLET,  # Remote Sensor Maximum Temperature
+    5007: _AIR_INLET,  # Remote Sensor Average Temperature
+    5059: _AIR_INLET,  # Remote Sensor Temperature (rack inlet sensors)
+    4291: _AIR_RETURN,  # Return Air Temperature
+    8078: _AIR_RETURN,  # Return Air Sensor Temperature (per sensor)
+    5028: _RH_RETURN,  # Return Humidity
+    8080: _RH_RETURN,  # Return Sensor Humidity
+    5027: _RH_SUPPLY,  # Supply Humidity
+    8090: _RH_SUPPLY,  # Supply Air Theoretical Humidity
+    5004: _DEW_POINT,  # Return Dew Point
+    4624: _CW_SUPPLY,  # Supply Fluid Temperature
+    6311: _CW_SUPPLY,  # Chilled Water Inlet Temperature
+    5668: _CW_RETURN,  # Outlet Chilled Water Temperature
+    6312: _CW_RETURN,  # Chilled Water Outlet Temperature
+}
+
+
 def _to_int(text: str) -> int | None:
     try:
         return int(text.strip())
@@ -476,13 +518,42 @@ def check_vertiv_unity_value(item: str, params: Mapping[str, object], section: S
     )
     value = point.value * factor + offset
     decimals = max(point.decimals, 1) if factor != 1.0 else point.decimals
+    render = _render(decimals, suffix)
+
+    defaults = DEFAULT_LEVELS.get(point.data_id)
+    if defaults is not None and defaults.metric != metric:
+        defaults = None  # unexpected unit: do not apply levels meant for another quantity
+    used_defaults: list[str] = []
+    levels: dict[str, object] = {}
+    for key, default in (
+        ("levels_upper", defaults.upper if defaults else None),
+        ("levels_lower", defaults.lower if defaults else None),
+    ):
+        if key in params:  # set by a rule (including an explicit "no levels")
+            levels[key] = params[key]
+        elif default is not None:
+            levels[key] = ("fixed", default)
+            used_defaults.append(
+                f"{'upper' if key == 'levels_upper' else 'lower'} {render(default[0])}/{render(default[1])}"
+            )
+        else:
+            levels[key] = None
+
     yield from check_levels(
         value,
-        levels_upper=params.get("levels_upper"),  # type: ignore[arg-type]
-        levels_lower=params.get("levels_lower"),  # type: ignore[arg-type]
+        levels_upper=levels["levels_upper"],  # type: ignore[arg-type]
+        levels_lower=levels["levels_lower"],  # type: ignore[arg-type]
         metric_name=metric,
-        render_func=_render(decimals, suffix),
+        render_func=render,
     )
+    if used_defaults and defaults is not None:
+        yield Result(
+            state=State.OK,
+            notice=(
+                f"Built-in default levels ({defaults.profile}): {', '.join(used_defaults)}; "
+                "override with rule 'Vertiv Unity - numeric parameters'"
+            ),
+        )
     discovered = params.get("discovered_value")
     change_state = State(int(params.get("change_state", 0)))  # type: ignore[call-overload]
     if (
@@ -591,11 +662,8 @@ check_plugin_vertiv_unity_value = CheckPlugin(
     discovery_default_parameters=DISCOVERY_DEFAULTS,
     discovery_ruleset_name="vertiv_unity_discovery",
     check_function=check_vertiv_unity_value,
-    check_default_parameters={
-        "levels_upper": ("no_levels", None),
-        "levels_lower": ("no_levels", None),
-        "change_state": 0,
-    },
+    # No levels here on purpose: absent keys mean "use DEFAULT_LEVELS for this data point".
+    check_default_parameters={"change_state": 0},
     check_ruleset_name="vertiv_unity_value",
 )
 

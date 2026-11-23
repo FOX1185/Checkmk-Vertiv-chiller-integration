@@ -94,7 +94,7 @@ def test_temperature_value_and_metric():
     s = section_of("crv602_fw8.4.7")
     res = list(vu.check_vertiv_unity_value("Return Air Temperature", VALUE_DEFAULTS, s))
     assert summary(res)[0] == "20.9 °C"  # raw 209 (text column read 20.8 a moment earlier)
-    assert Metric("temp", 20.9) in res
+    assert Metric("temp", 20.9, levels=(40.0, 45.0)) in res  # default levels for return air
     assert worst(res) is State.OK
 
 
@@ -221,3 +221,61 @@ def test_sensor_module_event():
 
 def test_discovery_events():
     assert list(vu.discover_vertiv_unity_events(section_of("crv602_fw8.4.7"))) == [Service()]
+
+
+# ---------------------------------------------------------------- default levels
+import dataclasses
+
+
+def _with_value(section, item, raw):
+    point = dataclasses.replace(section.data_points[item], raw=raw, text=str(raw / 10))
+    return dataclasses.replace(section, data_points={**section.data_points, item: point})
+
+
+def test_default_levels_applied_and_reported():
+    s = section_of("crv602_fw8.4.7")
+    res = list(vu.check_vertiv_unity_value("Supply Air Temperature", VALUE_DEFAULTS, s))
+    assert worst(res) is State.OK
+    assert Metric("temp", 19.4, levels=(27.0, 32.0)) in res
+    assert any("Built-in default levels" in (r.details or "") for r in res if isinstance(r, Result))
+    assert worst(list(vu.check_vertiv_unity_value("Supply Air Temperature", VALUE_DEFAULTS,
+                                                  _with_value(s, "Supply Air Temperature", 290)))) is State.WARN
+    assert worst(list(vu.check_vertiv_unity_value("Supply Air Temperature", VALUE_DEFAULTS,
+                                                  _with_value(s, "Supply Air Temperature", 110)))) is State.CRIT
+
+
+def test_default_levels_overridden_by_rule():
+    s = _with_value(section_of("crv602_fw8.4.7"), "Supply Air Temperature", 290)
+    no_upper = {**VALUE_DEFAULTS, "levels_upper": ("no_levels", None)}
+    assert worst(list(vu.check_vertiv_unity_value("Supply Air Temperature", no_upper, s))) is State.OK
+    custom = {**VALUE_DEFAULTS, "levels_upper": ("fixed", (30.0, 35.0))}
+    assert worst(list(vu.check_vertiv_unity_value("Supply Air Temperature", custom, s))) is State.OK
+    # the lower default still applies when only the upper level is configured
+    cold = _with_value(section_of("crv602_fw8.4.7"), "Supply Air Temperature", 110)
+    assert worst(list(vu.check_vertiv_unity_value("Supply Air Temperature", custom, cold))) is State.CRIT
+
+
+def test_default_levels_per_quantity():
+    s602, s300 = section_of("crv602_fw8.4.7"), section_of("crv300_fw6.5.0")
+    def levels(section, item):
+        m = next(x for x in vu.check_vertiv_unity_value(item, VALUE_DEFAULTS, section) if isinstance(x, Metric))
+        return None if m.levels == (None, None) else m.levels
+    assert levels(s602, "Return Air Temperature") == (40.0, 45.0)
+    assert levels(s602, "Return Sensor Humidity") == (70.0, 80.0)
+    assert levels(s602, "Chilled Water Inlet Temperature") == (20.0, 25.0)
+    assert levels(s602, "Chilled Water Outlet Temperature") == (26.0, 30.0)
+    assert levels(s602, "Remote Sensor Temperature 1") == (27.0, 32.0)
+    assert levels(s300, "Return Dew Point") == (17.0, 20.0)
+    assert levels(s300, "Supply Humidity") == (80.0, 90.0)
+    # no defaults for settings, counters and percentages
+    assert levels(s602, "Fan Speed") is None
+    assert levels(s602, "Fan Hours") is None
+    assert levels(s300, "Air Temperature Set Point") is None
+
+
+def test_default_levels_not_applied_to_unexpected_unit():
+    s = section_of("crv602_fw8.4.7")
+    point = dataclasses.replace(s.data_points["Supply Air Temperature"], unit_enum=4124, units="%")
+    s = dataclasses.replace(s, data_points={**s.data_points, "Supply Air Temperature": point})
+    res = list(vu.check_vertiv_unity_value("Supply Air Temperature", VALUE_DEFAULTS, s))
+    assert next(m for m in res if isinstance(m, Metric)).levels == (None, None)

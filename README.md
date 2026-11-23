@@ -2,9 +2,9 @@
 
 Plugin SNMP per **Checkmk 2.5** che monitora le unità di condizionamento Vertiv/Liebert con scheda
 **IntelliSlot Unity**. Legge in modo dinamico tutti i parametri esposti dalla scheda: crea un servizio per
-ogni parametro, con grafici e soglie configurabili, più un servizio per gli eventi attivi.
+ogni parametro, con grafici, soglie predefinite per aria, acqua e umidità e soglie configurabili, più un servizio per gli eventi attivi.
 
-**Versione corrente: 1.0.0** – pacchetto [`dist/vertiv_unity-1.0.0.mkp`](dist/vertiv_unity-1.0.0.mkp)
+**Versione corrente: 1.1.0** – pacchetto [`dist/vertiv_unity-1.1.0.mkp`](dist/vertiv_unity-1.1.0.mkp)
 
 ## Ambiente di test
 
@@ -37,11 +37,11 @@ MIB di riferimento: Vertiv **SNMP MIB Support Rev 26** (ottobre 2025), in `mibs/
 ## Installazione rapida
 
 ```bash
-docker cp dist/vertiv_unity-1.0.0.mkp <container>:/tmp/
+docker cp dist/vertiv_unity-1.1.0.mkp <container>:/tmp/
 ```
 
 ```bash
-docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.0.0.mkp && mkp enable vertiv_unity 1.0.0 && omd restart'
+docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.1.0.mkp && mkp enable vertiv_unity 1.1.0 && omd restart'
 ```
 
 Poi, per ogni unità: Service discovery → **Rescan** → accettare i nuovi servizi → rimuovere i servizi Liebert

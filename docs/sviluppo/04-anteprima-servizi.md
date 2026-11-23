@@ -1,6 +1,6 @@
 # Anteprima dei servizi (simulazione sui walk reali)
 
-Generata con `tools/preview_services.py`, parametri predefiniti, nessuna regola utente.
+Generata con `tools/preview_services.py` (versione 1.1.0), parametri predefiniti, nessuna regola utente.
 
 ## crv602_fw8.4.7
 
@@ -53,7 +53,7 @@ Generata con `tools/preview_services.py`, parametri predefiniti, nessuna regola 
 | Servizio | Tipo | Stato | Output | Metrica |
 |---|---|---|---|---|
 | Return Air Temperature | numerico | OK | 22.5 °C | temp |
-| Supply Fluid Temperature | numerico | OK | 21.5 °C | temp |
+| Supply Fluid Temperature | numerico | WARN | 21.5 °C (warn/crit at 20.0 °C/25.0 °C) | temp |
 | High Supply Fluid Temperature Threshold | numerico (impostazione) | OK | 99.0 °C | temp |
 | Auto Restart Delay | numerico (impostazione) | OK | 5 s | vertiv_unity_seconds |
 | Supply Air Temperature | numerico | OK | 21.2 °C | temp |

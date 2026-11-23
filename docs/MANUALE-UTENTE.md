@@ -1,4 +1,4 @@
-# Manuale utente – plugin `vertiv_unity` 1.0.0
+# Manuale utente – plugin `vertiv_unity` 1.1.0
 
 Monitoraggio SNMP in Checkmk delle unità di condizionamento **Vertiv/Liebert** con scheda di rete
 **IntelliSlot Unity** (es. Liebert CRV, CRC).
@@ -91,7 +91,7 @@ Testato con:
 
 ## 3. Installazione
 
-Il pacchetto è `dist/vertiv_unity-1.0.0.mkp`. Negli esempi:
+Il pacchetto è `dist/vertiv_unity-1.1.0.mkp`. Negli esempi:
 - il sito si chiama `cmk`;
 - `<container>` è il nome del container Docker di Checkmk (`docker ps`).
 
@@ -109,13 +109,13 @@ docker exec -u cmk <container> rm -rf /omd/sites/cmk/local/lib/python3/cmk_addon
 Copiare il file nel container:
 
 ```bash
-docker cp dist/vertiv_unity-1.0.0.mkp <container>:/tmp/
+docker cp dist/vertiv_unity-1.1.0.mkp <container>:/tmp/
 ```
 
 Aggiungere e attivare il pacchetto come utente del sito:
 
 ```bash
-docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.0.0.mkp && mkp enable vertiv_unity 1.0.0'
+docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.1.0.mkp && mkp enable vertiv_unity 1.1.0'
 ```
 
 In alternativa, se l'edizione la prevede, si può usare la GUI: **Setup → Maintenance → Extension
@@ -183,10 +183,37 @@ discovery è in **Setup → Services → Discovery rules**. Nelle regole per ser
 | State if the value differs from the one found at discovery | stato da assegnare se un'impostazione viene modificata (OK = controllo disattivato) |
 
 Le soglie sono nell'unità mostrata dal servizio: °C per le temperature, % per umidità e percentuali, h per i
-contaore, m³/h per le portate e così via. Non ci sono soglie predefinite.
+contaore, m³/h per le portate e così via.
+
+#### Soglie predefinite
+
+Le temperature dell'aria e dell'acqua refrigerata, l'umidità e il punto di rugiada hanno soglie già
+impostate. Sono ricavate da riferimenti di settore, non dai valori misurati sulle unità:
+
+| Grandezza | Servizi (data ID) | WARN / CRIT superiore | WARN / CRIT inferiore | Riferimento |
+|---|---|---|---|---|
+| Aria di mandata e sensori ai rack | Supply Air Temperature (5002), Supply Air Sensor Temperature *n* (8077), Remote Sensor Temperature *n* / Average / Minimum / Maximum (5059, 5007, 5005, 5006) | 27 / 32 °C | 15 / 12 °C | ASHRAE TC 9.9 classe A1: consigliato 18–27 °C, ammesso 15–32 °C |
+| Aria di ripresa (corridoio caldo) | Return Air Temperature (4291), Return Air Sensor Temperature *n* (8078) | 40 / 45 °C | — | aria calda in uscita dai server; una temperatura bassa non è un problema |
+| Umidità di ripresa | Return Humidity (5028), Return Sensor Humidity (8080) | 70 / 80 % | 20 / 15 % | ASHRAE A1: fino all'80 % ammesso; sotto il 20 % aumenta il rischio di scariche elettrostatiche |
+| Umidità di mandata | Supply Humidity (5027), Supply Air Theoretical Humidity (8090) | 80 / 90 % | 20 / 15 % | l'aria fredda di mandata ha un'umidità relativa più alta di quella di ripresa |
+| Punto di rugiada | Return Dew Point (5004) | 17 / 20 °C | −9 / −12 °C | ASHRAE A1: rugiada massima 17 °C ammessa, minima −9 °C |
+| Acqua refrigerata in ingresso all'unità | Chilled Water Inlet Temperature (6311), Supply Fluid Temperature (4624) | 20 / 25 °C | 5 / 3 °C | mandata tipica 7–20 °C; più calda riduce la capacità frigorifera, sotto 5 °C c'è rischio di gelo senza glicole |
+| Acqua refrigerata in uscita dall'unità | Chilled Water Outlet Temperature (6312), Outlet Chilled Water Temperature (5668) | 26 / 30 °C | 5 / 3 °C | ritorno tipico: mandata + 5…6 °C |
+
+- Una regola che imposta *Upper levels* o *Lower levels* **sostituisce** la soglia predefinita
+  corrispondente. L'altra soglia resta quella predefinita.
+- Scegliendo **No levels** nella regola, la soglia predefinita si disattiva.
+- Nei dettagli del servizio è indicato quando sono in uso le soglie predefinite.
+- Set point, bande, soglie configurate sull'unità, contaore, percentuali (ventilatori, valvola, capacità),
+  portate e grandezze elettriche **non** hanno soglie predefinite. Dipendono dal dimensionamento e
+  dall'esercizio dell'impianto, oppure l'unità le controlla già con i propri eventi.
+
+> Le soglie predefinite sono pensate per una sala dati tipica. Se l'impianto lavora volutamente fuori da
+> questi valori (es. acqua refrigerata a temperatura elevata, corridoio caldo oltre 40 °C), adattarle con
+> la regola.
 
 Esempi:
-- *Return Air Temperature*: Upper levels 27 / 30.
+- *Supply Fluid Temperature*: Upper levels 23 / 26, se l'impianto lavora con acqua a 20–22 °C.
 - *Air Filter Hours*: Upper levels 2000 / 2500, come promemoria manutenzione.
 - *Chilled Water Inlet Temperature*: Lower levels 6 / 4.
 - *Air Temperature Set Point*: "State if the value differs…" = WARN, per accorgersi di modifiche al set
@@ -247,12 +274,17 @@ docker cp dist/vertiv_unity-X.Y.Z.mkp <container>:/tmp/
 docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-X.Y.Z.mkp && mkp enable vertiv_unity X.Y.Z && omd restart'
 ```
 
-Poi Rescan della discovery, se le note di rilascio lo indicano.
+Poi Rescan della discovery, se le note di rilascio lo indicano. Il pacchetto precedente resta in `mkp list`
+come inattivo; si può eliminare con `mkp remove vertiv_unity <versione precedente>`.
+
+*Da 1.0.0 a 1.1.0:* nessuna nuova discovery necessaria. Le soglie predefinite si applicano subito ai servizi
+esistenti, quindi alcuni servizi possono passare in WARN/CRIT: controllare i valori e adattare le regole se
+l'impianto lavora volutamente fuori dai valori predefiniti (§4.1).
 
 **Disinstallazione:**
 
 ```bash
-docker exec -u cmk <container> bash -lc 'mkp disable vertiv_unity 1.0.0 && mkp remove vertiv_unity 1.0.0 && omd restart'
+docker exec -u cmk <container> bash -lc 'mkp disable vertiv_unity 1.1.0 && mkp remove vertiv_unity 1.1.0 && omd restart'
 ```
 
 Poi rifare la discovery: i servizi del plugin risultano *vanished*, mentre i servizi Liebert standard

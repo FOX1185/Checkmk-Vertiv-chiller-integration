@@ -44,7 +44,9 @@ def _value_form() -> Dictionary:
         title=Title("Numeric parameter"),
         help_text=Help(
             "Levels apply to the value in the unit shown in the service output "
-            "(temperatures always in °C)."
+            "(temperatures always in °C). Air temperatures, humidity, dew point and chilled water "
+            "temperatures have built-in default levels: configuring upper or lower levels here "
+            "replaces the corresponding default, choosing 'No levels' disables it."
         ),
         elements={
             "levels_upper": DictElement(
