@@ -1,7 +1,10 @@
 """Confronta due SNMP_Parameters.txt per data ID della lgpFlexibleBasicTable.
 Uso: python3 compare_models.py <CRV602_SNMP_Parameters.txt> <CRV300_SNMP_Parameters.txt> > cmp.tsv"""
 import sys,re
-P='1.3.6.1.4.1.476.1.42.3.9.20.1.20.'
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "plugin"))
+from cmk_addons.plugins.vertiv_unity.constants import FLEX_BASE
+P=FLEX_BASE.lstrip('.')+'.20.1.20.'
 def load(fn):
     d={}
     cur=None

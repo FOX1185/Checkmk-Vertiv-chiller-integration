@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+.pytest_cache/
+*.egg-info/
+# output of tools/check_mapping_vs_mib.py when run with the MIB folder as target
+oidmap.json
