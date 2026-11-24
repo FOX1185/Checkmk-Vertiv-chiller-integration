@@ -1,4 +1,4 @@
-# Documentazione tecnica – plugin `vertiv_unity` 1.2.0
+# Documentazione tecnica – plugin `vertiv_unity` 1.2.1
 
 Plugin SNMP per **Checkmk 2.5** che monitora le unità di condizionamento Vertiv/Liebert dotate di scheda
 **IntelliSlot Unity**. Questo documento descrive:
@@ -16,7 +16,7 @@ singole fasi sono in [sviluppo/](sviluppo/).
 
 | Voce | Valore |
 |---|---|
-| Versione | 1.2.0 (file `VERSION`) |
+| Versione | 1.2.1 (file `VERSION`) |
 | Checkmk | 2.5.0 o superiore (sviluppato e verificato su Community 2.5.0p12, Docker, core Nagios) |
 | Dispositivi verificati | Liebert CRV300 – Unity FW 6.5.0; Liebert CRC602 (indicato in progetto come "CRV602") – Unity FW 8.4.7 |
 | Dispositivi previsti | Liebert CRV25 (Unity FW 7.8.0) – non ancora verificato; in generale qualunque unità con scheda Unity che espone la tabella Flexible |
@@ -96,11 +96,14 @@ Il plugin le normalizza entrambe come `4123.1`.
 plugin/cmk_addons/plugins/vertiv_unity/
 ├── agent_based/vertiv_unity.py   sezione SNMP, parsing, discovery, 4 check plugin
 ├── rulesets/vertiv_unity.py      4 regole (3 di check, 1 di discovery)
-└── graphing/vertiv_unity.py      12 metriche
+├── graphing/vertiv_unity.py      12 metriche
+└── lib/constants.py              costanti condivise con gli script in tools/ (OID base, tipi, accessi)
 ```
 
 Nel sito Checkmk i file vanno in `~/local/lib/python3/cmk_addons/plugins/vertiv_unity/`.
 Checkmk li carica automaticamente in base alla cartella: `cmk_addons.plugins.<famiglia>.<gruppo>`.
+`lib/` è la cartella prevista da Checkmk per il codice condiviso: non viene caricata come plugin, ma è importabile.
+`lib/constants.py` non importa nulla da Checkmk, così gli script in `tools/` funzionano anche senza un sito.
 
 ### 3.1 Flusso
 
@@ -363,7 +366,7 @@ Esecuzione:
 CMK_PLUGIN_APIS=<checkmk>/packages/cmk-plugin-apis python3 -m pytest tests
 ```
 
-Esito della versione 1.2.0: **44 test superati**. Coprono soglie predefinite e solo WARN, controlli incrociati
+Esito della versione 1.2.1: **44 test superati** (come la 1.2.0). Coprono soglie predefinite e solo WARN, controlli incrociati
 (ventole ferme, assenza di flusso), tensioni, nuove mappe di stato, Cooling State dinamico, avviso su
 modifica, severità degli eventi (tabella e precedenza della scheda) e il servizio Cooling Control Deviation
 su entrambi i firmware. Verifica sul campo: discovery reale sul CRV602 con
@@ -377,7 +380,7 @@ Strumenti di supporto in `tools/`:
 | `flex_table.py` | ricostruisce la tabella da un walk |
 | `preview_services.py` | elenca i servizi che il plugin creerebbe |
 | `compare_models.py` | confronta due file di mapping |
-| `check_mapping_vs_mib.py` | verifica i file di mapping contro le MIB |
+| `check_mapping_vs_mib.py` | verifica i file di mapping contro le MIB; scrive la mappa OID → nome in `./oidmap.json` (o nel file indicato come terzo argomento) |
 | `build_mkp.py` | costruisce il pacchetto |
 
 ---

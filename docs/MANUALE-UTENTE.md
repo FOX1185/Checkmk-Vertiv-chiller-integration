@@ -1,4 +1,4 @@
-# Manuale utente – plugin `vertiv_unity` 1.2.0
+# Manuale utente – plugin `vertiv_unity` 1.2.1
 
 Monitoraggio SNMP in Checkmk delle unità di condizionamento **Vertiv/Liebert** con scheda di rete
 **IntelliSlot Unity** (es. Liebert CRV, CRC).
@@ -134,7 +134,7 @@ Testato con:
 
 ## 3. Installazione
 
-Il pacchetto è `dist/vertiv_unity-1.2.0.mkp`. Negli esempi:
+Il pacchetto è `dist/vertiv_unity-1.2.1.mkp`. Negli esempi:
 - il sito si chiama `cmk`;
 - `<container>` è il nome del container Docker di Checkmk (`docker ps`).
 
@@ -152,13 +152,13 @@ docker exec -u cmk <container> rm -rf /omd/sites/cmk/local/lib/python3/cmk_addon
 Copiare il file nel container:
 
 ```bash
-docker cp dist/vertiv_unity-1.2.0.mkp <container>:/tmp/
+docker cp dist/vertiv_unity-1.2.1.mkp <container>:/tmp/
 ```
 
 Aggiungere e attivare il pacchetto come utente del sito:
 
 ```bash
-docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.2.0.mkp && mkp enable vertiv_unity 1.2.0'
+docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.2.1.mkp && mkp enable vertiv_unity 1.2.1'
 ```
 
 In alternativa, se l'edizione la prevede, si può usare la GUI: **Setup → Maintenance → Extension
@@ -359,10 +359,13 @@ l'impianto lavora volutamente fuori dai valori predefiniti (§4.1).
 - se un'impostazione è stata modificata dopo l'ultima discovery, il servizio va in WARN: rifare la discovery
   di quel servizio per accettare il valore attuale.
 
+*Da 1.2.0 a 1.2.1:* solo riorganizzazione interna del codice. Servizi, soglie e stati non cambiano;
+nessuna discovery necessaria.
+
 **Disinstallazione:**
 
 ```bash
-docker exec -u cmk <container> bash -lc 'mkp disable vertiv_unity 1.2.0 && mkp remove vertiv_unity 1.2.0 && omd restart'
+docker exec -u cmk <container> bash -lc 'mkp disable vertiv_unity 1.2.1 && mkp remove vertiv_unity 1.2.1 && omd restart'
 ```
 
 Poi rifare la discovery: i servizi del plugin risultano *vanished*, mentre i servizi Liebert standard

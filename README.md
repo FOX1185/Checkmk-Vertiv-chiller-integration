@@ -5,7 +5,7 @@ Plugin SNMP per **Checkmk 2.5** che monitora le unità di condizionamento Vertiv
 ogni parametro, con grafici e soglie/stati WARN-CRIT predefiniti per le funzioni principali (aria, acqua,
 umidità, ventole, alimentazione, regolazione), sempre configurabili, più un servizio per gli eventi attivi.
 
-**Versione corrente: 1.2.0** – pacchetto [`dist/vertiv_unity-1.2.0.mkp`](dist/vertiv_unity-1.2.0.mkp)
+**Versione corrente: 1.2.1** – pacchetto [`dist/vertiv_unity-1.2.1.mkp`](dist/vertiv_unity-1.2.1.mkp)
 
 ## Ambiente di test
 
@@ -38,11 +38,11 @@ MIB di riferimento: Vertiv **SNMP MIB Support Rev 26** (ottobre 2025), in `mibs/
 ## Installazione rapida
 
 ```bash
-docker cp dist/vertiv_unity-1.2.0.mkp <container>:/tmp/
+docker cp dist/vertiv_unity-1.2.1.mkp <container>:/tmp/
 ```
 
 ```bash
-docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.2.0.mkp && mkp enable vertiv_unity 1.2.0 && omd restart'
+docker exec -u cmk <container> bash -lc 'mkp add /tmp/vertiv_unity-1.2.1.mkp && mkp enable vertiv_unity 1.2.1 && omd restart'
 ```
 
 Poi, per ogni unità: Service discovery → **Rescan** → accettare i nuovi servizi → rimuovere i servizi Liebert

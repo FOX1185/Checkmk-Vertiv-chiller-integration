@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "plugin"))
-from cmk_addons.plugins.vertiv_unity.constants import ACCESS_NAMES, FLEX_BASE, TYPE_NAMES  # noqa: E402
+from cmk_addons.plugins.vertiv_unity.lib.constants import ACCESS_NAMES, FLEX_BASE, TYPE_NAMES  # noqa: E402
 
 B = FLEX_BASE + "."
 COLS = {'20.1.10': 'label', '20.1.20': 'value', '20.1.30': 'units', '30.1.10': 'int', '30.1.20': 'uint',

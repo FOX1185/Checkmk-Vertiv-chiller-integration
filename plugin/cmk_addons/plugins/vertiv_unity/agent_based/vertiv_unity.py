@@ -21,7 +21,6 @@ from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
 
-from cmk_addons.plugins.vertiv_unity.constants import ACCESS_NAMES, FLEX_BASE, TYPE_NAMES
 from cmk.agent_based.v2 import (
     all_of,
     check_levels,
@@ -39,6 +38,8 @@ from cmk.agent_based.v2 import (
     State,
     StringTable,
 )
+
+from cmk_addons.plugins.vertiv_unity.lib.constants import ACCESS_NAMES, FLEX_BASE, TYPE_NAMES
 
 _FLEX = FLEX_BASE
 

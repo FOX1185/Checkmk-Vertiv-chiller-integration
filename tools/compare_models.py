@@ -3,7 +3,7 @@ Uso: python3 compare_models.py <CRV602_SNMP_Parameters.txt> <CRV300_SNMP_Paramet
 import sys,re
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "plugin"))
-from cmk_addons.plugins.vertiv_unity.constants import FLEX_BASE
+from cmk_addons.plugins.vertiv_unity.lib.constants import FLEX_BASE
 P=FLEX_BASE.lstrip('.')+'.20.1.20.'
 def load(fn):
     d={}
