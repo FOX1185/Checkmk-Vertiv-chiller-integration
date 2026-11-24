@@ -16,6 +16,7 @@ from cmk.mkp_tool._mkp import Manifest, create_mkp, extract_manifest  # noqa: E4
 
 NAME = "vertiv_unity"
 VERSION = (ROOT / "VERSION").read_text().strip()
+PACKAGED_WITH = "2.5.0p12"
 PART_DIR = ROOT / "plugin" / "cmk_addons" / "plugins"
 
 files = sorted(
@@ -35,7 +36,7 @@ manifest = Manifest(
         "liebert_* SNMP sections on detected hosts."
     ),
     version=PackageVersion(VERSION),
-    version_packaged="2.5.0p12",
+    version_packaged=PACKAGED_WITH,
     version_min_required="2.5.0",
     version_usable_until=None,
     author="fox1185",
@@ -43,7 +44,7 @@ manifest = Manifest(
     files={PackagePart.CMK_ADDONS_PLUGINS: files},
 )
 
-mkp = create_mkp(manifest, lambda part: PART_DIR, version_packaged="2.5.0p12")
+mkp = create_mkp(manifest, lambda part: PART_DIR, version_packaged=PACKAGED_WITH)
 out = ROOT / "dist" / f"{NAME}-{VERSION}.mkp"
 out.parent.mkdir(exist_ok=True)
 out.write_bytes(mkp)

@@ -2,6 +2,22 @@
 
 Formato: [Keep a Changelog](https://keepachangelog.com/it/1.1.0/), versionamento semantico.
 
+## [1.2.1] – 2026-11-24
+
+Nessun cambiamento per servizi, soglie, stati o regole: non serve una nuova discovery.
+
+### Modificato
+- Costanti comuni (OID base della tabella flessibile, nomi dei tipi e degli accessi) in un unico modulo
+  `lib/constants.py`, usato dal plugin e dagli script in `tools/` (contributo di jacklocke).
+- Codice semplificato: niente duplicazioni per l'avviso su modifica e per le mappe di stato condivise;
+  esclusioni della discovery calcolate una sola volta.
+- Regola sulla severità degli eventi: lo stato scelto viene letto senza badare a maiuscole e spazi; un valore
+  non riconosciuto fa usare la severità della scheda invece di ignorare l'evento.
+- `tools/flex_table.py` usa i nomi completi di tipi e accessi (`read-only` invece di `ro`, `not specified`
+  invece di `n/s`); rigenerate le tabelle in `docs/walks/`.
+- `tools/check_mapping_vs_mib.py` scrive `oidmap.json` nella cartella corrente (o nel file indicato come
+  terzo argomento), non più nella cartella delle MIB.
+
 ## [1.2.0] – 2026-11-23
 
 ### Aggiunto

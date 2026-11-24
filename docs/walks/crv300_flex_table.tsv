@@ -1,263 +1,263 @@
 idx	label	value	units	int	uint	dec	type	access	uenum	descr
-1.2.1.4096	System Input RMS A-N	Unavailable	VAC	2147483647		0	int16	ro	4100	The System Input RMS Voltage between Phase A and Neutral
-1.2.1.4097	System Input RMS A-B	Unavailable	VAC	2147483647		0	int16	ro	4100	The System Input RMS Voltage between Phase A and Phase B
-1.2.1.4098	System Input RMS B-N	Unavailable	VAC	2147483647		0	int16	ro	4100	The System Input RMS Voltage between Phase B and Neutral
-1.2.1.4099	System Input RMS B-C	Unavailable	VAC	2147483647		0	int16	ro	4100	The System Input RMS Voltage between Phase B and Phase C
-1.2.1.4100	System Input RMS C-N	Unavailable	VAC	2147483647		0	int16	ro	4100	The System Input RMS Voltage between Phase C and Neutral
-1.2.1.4101	System Input RMS C-A	Unavailable	VAC	2147483647		0	int16	ro	4100	The System Input RMS Voltage between Phase C and Phase A
-1.2.1.4113	System Input RMS Current Phase A	Unavailable	A AC	2147483647		0	int16	ro	4106	The system input RMS current for Phase A
-1.2.1.4114	System Input RMS Current Phase B	Unavailable	A AC	2147483647		0	int16	ro	4106	The system input RMS current for Phase B
-1.2.1.4115	System Input RMS Current Phase C	Unavailable	A AC	2147483647		0	int16	ro	4106	The system input RMS current for Phase C
-1.2.1.4123	System Status	Normal Operation			1		enum	ro		The operating status for the system
-1.2.1.4240	System Model Number	Liebert CRV					text	ro		System model identifier
-1.2.1.4291	Return Air Temperature	22.5	deg C	225		1	int16	ro	4125	The temperature of the inlet air
-1.2.1.4293	System Date and Time	2026-11-23 15:25:51					time32	rw		The system date and time
-1.2.1.4329	System Name	UNIT-1					text	rw		End user assigned name for the system
-1.2.1.4553	Server Class	AIR			2		enum	ro		The general classification for this system
-1.2.1.4624	Supply Fluid Temperature	21.5	deg C	215		1	int16	ro	4125	Supply chilled water or glycol temperature.
-1.2.1.4625	High Supply Fluid Temperature Threshold	99.0	deg C	990		1	int16	rw	4125	Threshold value used in the [Supply Chilled Water Over Temp] event.
-1.2.1.4706	Unit Operating State	on			1		enum	ro		Current operating state of the unit.
-1.2.1.4707	Unit Control Mode	Internal (Auto)			0		enum	ro		Unit control mode.
-1.2.1.4710	Auto Restart Delay	5	sec		5	0	uint16	rw	4097	If power is lost, the control will delay this amount of time after power is restored before restarting the unit.
-1.2.1.4715	Shutdown - Loss Of Power - Event Control	disabled			0		enum	rw		Enable/disable the activation of the [Shutdown - Loss Of Power] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.4716	Shutdown - Loss Of Power - Event Type	Message			0		enum	rw		The event type for the [Shutdown - Loss Of Power] event.
-1.2.1.4718	Customer Input 1 - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Customer Input 1] event.  If set to 'disabled', the event will not be annunciated.  This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.4719	Customer Input 1 - Event Type	Alarm			2		enum	rw		The event type for the [Customer Input 1] event.
-1.2.1.4721	Smoke Detected - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Smoke Detected] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.4722	Smoke Detected - Event Type	Alarm			2		enum	rw		The event type for the [Smoke Detected] event.
-1.2.1.4724	Water Under Floor - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Water Under Floor] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.4725	Water Under Floor - Event Type	Alarm			2		enum	rw		The event type for the [Water Under Floor] event.
-1.2.1.4727	Service Required - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Service Required] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.4728	Service Required - Event Type	Alarm			2		enum	rw		The event type for the [Service Required] event.
-1.2.1.4868	Calculated Next Maintenance Month	65409			65409	0	uint16	ro	0	Calculated month of the next scheduled maintenance. Used in conjunction with [Calculated Next Maintenance Year].
-1.2.1.4869	Calculated Next Maintenance Year	Unavailable			4294967295	0	uint16	ro	0	Calculated year of the next scheduled maintenance. Used in conjunction with [Calculated Next Maintenance Month].
-1.2.1.4870	Maintenance Ramp	Unavailable	%		4294967295	0	uint16	ro	4124	The ratio of operations performed to the calculated operations available between maintenance intervals.
-1.2.1.5002	Supply Air Temperature	21.2	deg C	212		1	int16	ro	4125	Air temperature measured at the outlet of the unit.
-1.2.1.5004	Return Dew Point	15.2	deg C	152		1	int16	ro	4125	Dew point temperature measured at the inlet of the unit.
-1.2.1.5005	Remote Sensor Minimum Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Minimum value of remote sensor temperature measurements.
-1.2.1.5006	Remote Sensor Maximum Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Maximum value of remote sensor temperature measurements.
-1.2.1.5007	Remote Sensor Average Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Average value of remote sensor temperature measurements.
-1.2.1.5008	Air Temperature Set Point	21.0	deg C	210		1	int16	rw	4125	Desired air temperature.  This set point is dependent upon which sensor is selected for control.
-1.2.1.5009	Cooling Proportional Band	2.4	deg C		24	1	uint16	rw	4126	Temperature control band above [Air Temperature Set Point]. If measured air temperature is within this band, cooling operations are proportionally controlled.
-1.2.1.5010	Heating Proportional Band	5.0	deg C		50	1	uint16	rw	4126	Temperature control band below [Air Temperature Set Point]. If measured air temperature is within this band, heating operations are proportionally controlled.
-1.2.1.5011	Air Temperature Dead Band	0.2	deg C		2	1	uint16	rw	4126	Value that is divided evenly to form a temperature range above and below [Air Temperature Set Point]. If measured air temperature is within this range, no heating or cooling will occur.
-1.2.1.5012	Air Temperature Control Sensor	Supply			0		enum	rw		Sensor from which air temperature measurements will be used for cooling and heating control.
-1.2.1.5013	Remote Sensor Temperature Calculation	Average			0		enum	rw		Calculation method applied to temperature readings from the remote sensors to determine a single temperature measurement value for cooling and heating control.
-1.2.1.5014	High Supply Air Temperature Threshold	26.7	deg C	267		1	int16	rw	4125	Threshold value used in the [Supply Air Over Temperature] event.
-1.2.1.5018	Low Supply Air Temperature Threshold	8.0	deg C	80		1	int16	rw	4125	Threshold value used in the [Supply Air Under Temperature] event.
-1.2.1.5022	High Return Air Temperature Threshold	40.0	deg C	400		1	int16	rw	4125	Threshold value used in the [Return Air Over Temperature] event.
-1.2.1.5027	Supply Humidity	69.4	% RH		694	1	uint16	ro	4132	Relative humidity at the outlet of the unit.
-1.2.1.5028	Return Humidity	63.5	% RH		635	1	uint16	ro	4132	Relative humidity measured at the inlet of the unit.
-1.2.1.5029	Humidity Set Point	45	% RH		45	0	uint16	rw	4132	Desired relative humidity.
-1.2.1.5030	Humidification Proportional Band	5	% RH		5	0	uint16	rw	4132	Humidity control band below [Humidity Set Point]. If measured humidity is within this band, humidification operations are proportionally controlled.
-1.2.1.5031	Dehumidification Proportional Band	5	% RH		5	0	uint16	rw	4132	Humidity control band above [Humidity Set Point]. If measured humidity is within this band, dehumidification operations are proportionally controlled.
-1.2.1.5032	Humidity Dead Band	5.0	% RH		50	1	uint16	rw	4132	Value that is divided evenly to form a range above and below [Humidity Set Point]. If measured humidity is within this range, no humidification or dehumidification will occur.
-1.2.1.5033	High Return Humidity Threshold	99.0	% RH		990	1	uint16	rw	4132	Threshold value used in the [High Return Humidity] event.
-1.2.1.5035	Low Return Humidity Threshold	1.0	% RH		10	1	uint16	rw	4132	Threshold value used in the [Low Return Humidity] event.
-1.2.1.5047	Fan Control Mode	Internal (Auto)			0		enum	rw		Fan control mode.   Allowable modes are: (0) Auto - Fan speed is controlled via the selected fan control sensor, and, (1) Manual - Fan will operate at a fixed speed.
-1.2.1.5048	Fan Speed Proportional Band	4.0	deg C		40	1	uint16	rw	4126	Temperature control band above the temperature set point calculated for proportional fan speed control. If measured air temperature is within this band, fan speed operations are proportionally controlled.
-1.2.1.5049	Fan Speed Manual Set Point	70	%		70	0	uint16	rw	4124	Manual fan speed.
-1.2.1.5050	Fan Speed Maximum Set Point	50	%		50	0	uint16	rw	4124	Maximum fan speed.
-1.2.1.5051	Fan Speed Minimum Set Point	40	%		40	0	uint16	rw	4124	Minimum fan speed.
-1.2.1.5052	Fan Control Sensor	Return			2		enum	rw		Sensor from which air temperature measurements will be used for fan speed control.
-1.2.1.5057.1	Remote Sensor Name						text	rw		Name assigned to remote sensor.
-1.2.1.5057.2	Remote Sensor Name						text	rw		Name assigned to remote sensor.
-1.2.1.5057.3	Remote Sensor Name						text	rw		Name assigned to remote sensor.
-1.2.1.5057.4	Remote Sensor Name						text	rw		Name assigned to remote sensor.
-1.2.1.5057.5	Remote Sensor Name						text	rw		Name assigned to remote sensor.
-1.2.1.5057.6	Remote Sensor Name						text	rw		Name assigned to remote sensor.
-1.2.1.5057.7	Remote Sensor Name						text	rw		Name assigned to remote sensor.
-1.2.1.5057.8	Remote Sensor Name						text	rw		Name assigned to remote sensor.
-1.2.1.5057.9	Remote Sensor Name						text	rw		Name assigned to remote sensor.
-1.2.1.5057.10	Remote Sensor Name						text	rw		Name assigned to remote sensor.
-1.2.1.5058.1	Remote Sensor Function	Disable			0		enum	rw		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
-1.2.1.5058.2	Remote Sensor Function	Disable			0		enum	rw		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
-1.2.1.5058.3	Remote Sensor Function	Disable			0		enum	rw		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
-1.2.1.5058.4	Remote Sensor Function	Disable			0		enum	rw		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
-1.2.1.5058.5	Remote Sensor Function	Disable			0		enum	rw		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
-1.2.1.5058.6	Remote Sensor Function	Disable			0		enum	rw		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
-1.2.1.5058.7	Remote Sensor Function	Disable			0		enum	rw		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
-1.2.1.5058.8	Remote Sensor Function	Disable			0		enum	rw		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
-1.2.1.5058.9	Remote Sensor Function	Disable			0		enum	rw		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
-1.2.1.5058.10	Remote Sensor Function	Disable			0		enum	rw		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
-1.2.1.5059.1	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
-1.2.1.5059.2	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
-1.2.1.5059.3	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
-1.2.1.5059.4	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
-1.2.1.5059.5	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
-1.2.1.5059.6	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
-1.2.1.5059.7	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
-1.2.1.5059.8	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
-1.2.1.5059.9	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
-1.2.1.5059.10	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	ro	4125	Air temperature as measured by remote sensor.
-1.2.1.5074	Unit Operating State Reason	Reason Unknown			0		enum	ro		The reason the unit is in the current operating state.
-1.2.1.5075	BMS Timeout Period	0	min		0	0	uint16	rw	4098	Timeframe within which the Building Management System (or external monitoring system) must communicate with the system to avoid a timeout.
-1.2.1.5076	Operating Efficiency	75	%		75	0	uint16	ro	4124	The ratio of cooling energy provided to the amount of total energy being used.
-1.2.1.5077	Fan Speed	40	%		40	0	uint16	ro	4124	Fan speed expressed as a percentage of the maximum rated speed.
-1.2.1.5078	Cooling Capacity (Primary)	38	%		38	0	uint16	ro	4124	Compressor utilization or chilled water valve position, based on unit type.
-1.2.1.5079	Dehumidifier Utilization	Unavailable	%		4294967295	0	uint16	ro	4124	Present dehumidifier utilization expressed as a percentage of the maximum rated capacity.
-1.2.1.5080	Reheat Utilization	0	%		0	0	uint16	ro	4124	Present reheating utilization expressed as a percentage of the maximum rated capacity.
-1.2.1.5081	Humidifier Utilization	Unavailable	%		4294967295	0	uint16	ro	4124	Present humidifier utilization expressed as a percentage of the maximum rated capacity.
-1.2.1.5082	Ext Loss of Flow - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Ext Loss of Flow] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.5083	Ext Loss of Flow - Event Type	Alarm			2		enum	rw		The event type for the [Ext Loss of Flow] event.
-1.2.1.5084	Ext Reheat Lockout - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Ext Reheat Lockout] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.5085	Ext Reheat Lockout - Event Type	Alarm			2		enum	rw		The event type for the [Ext Reheat Lockout] event.
-1.2.1.5086	Ext Humidifier Lockout - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Ext Humidifier Lockout] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.5087	Ext Humidifier Lockout - Event Type	Warning			1		enum	rw		The event type for the [Ext Humidifier Lockout] event.
-1.2.1.5088	Ext Compressor Lockout - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Ext Compressor Lockout] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.5089	Ext Compressor Lockout - Event Type	Alarm			2		enum	rw		The event type for the [Ext Compressor Lockout] event.
-1.2.1.5090	Ext Over Temperature - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Ext Over Temperature] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.5091	Ext Over Temperature - Event Type	Alarm			2		enum	rw		The event type for the [Ext Over Temperature] event.
-1.2.1.5092	Condenser VFD Issue - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Condenser VFD Issue] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.5093	Condenser VFD Issue - Event Type	Alarm			2		enum	rw		The event type for the [Condenser VFD Issue] event.
-1.2.1.5094	Condenser TVSS Issue - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Condenser TVSS or SPD Issue] event (Transient Voltage Surge Suppressor or Surge Protection Device). If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active
-1.2.1.5095	Condenser TVSS Issue - Event Type	Alarm			2		enum	rw		The event type for the [Condenser TVSS or SPD Issue] event (Transient Voltage Surge Suppressor or Surge Protection Device).
-1.2.1.5096	Condenser 1 Issue - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Condenser 1 Issue] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.5097	Condenser 1 Issue - Event Type	Warning			1		enum	rw		The event type for the [Condenser 1 Issue] event.
-1.2.1.5098	Customer Input 2 - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Customer Input 2] event.  If set to 'disabled', the event will not be annunciated.  This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.5099	Customer Input 2 - Event Type	Alarm			2		enum	rw		The event type for the [Customer Input 2] event.
-1.2.1.5100	Customer Input 3 - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Customer Input 3] event.  If set to 'disabled', the event will not be annunciated.  This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.5101	Customer Input 3 - Event Type	Alarm			2		enum	rw		The event type for the [Customer Input 3] event.
-1.2.1.5102	Customer Input 4 - Event Control	enabled			1		enum	rw		Enable/disable the activation of the [Customer Input 4] event.  If set to 'disabled', the event will not be annunciated.  This implies that the event will not be placed in any active event list or in any event history list.
-1.2.1.5103	Customer Input 4 - Event Type	Alarm			2		enum	rw		The event type for the [Customer Input 4] event.
-1.2.1.5143	System On/Off Control	on			1		enum	rw		Turn system functionality on or off.
-1.2.1.5667	SuperSaver request sent to CApCom Master	0	%	0		0	int16	ro	4124	SuperSaver request sent to CApCom Master
-1.2.1.5668	Outlet Chilled Water Temperature	-32768	deg C	-32768		0	int16	ro	4125	Outlet Chilled Water Temperature
-1.2.1.5669	Water Flow Rate (l/min)	-32768	l/min	-32768		0	int16	ro	4158	Water Flow Rate (l/min)
-1.2.1.5670	Water Flow Rate (m3/h)	-32768	m3/h	-32768		0	int16	ro	4155	Water Flow Rate (m3/h)
-1.2.1.5671	Cooling Capacity in KW	-32768	kW	-32768		0	int16	ro	4115	Cooling Capacity in KW
-1.2.1.5672	Automatic Transfer Switch - Active Power Supply	Power Supply 1			0		enum	ro		Indicates which power supply is in use by the Automatic Transfer Switch.
-1.2.1.5673	Automatic Transfer Switch - Power Supply 1 Status	OK			0		enum	ro		Status of power supply 1 in Automatic Transfer Switch.
-1.2.1.5674	Automatic Transfer Switch - Power Supply 2 Status	OK			0		enum	ro		Status of power supply 2 in Automatic Transfer Switch.
-1.2.1.5675	Power Meter Status	0		0		0	int16	ro	0	Power Meter Status
-1.2.1.5900	Energy Consumption	Unavailable	kWH	2147483647		0	int32	ro	4117	Energy consumption since the last reset of this value.
-1.2.1.5901	Instantaneous Power	Unavailable	W	2147483647		0	int32	ro	4114	Total electrical power currently being consumed.
-1.2.2.4291	Return Air Temperature	72.5	deg F	725		1	int16	ro	4127	The temperature of the inlet air
-1.2.2.4624	Supply Fluid Temperature	70.7	deg F	707		1	int16	ro	4127	Supply chilled water or glycol temperature.
-1.2.2.4625	High Supply Fluid Temperature Threshold	210.2	deg F	2102		1	int16	rw	4127	Threshold value used in the [Supply Chilled Water Over Temp] event.
-1.2.2.5002	Supply Air Temperature	70.2	deg F	702		1	int16	ro	4127	Air temperature measured at the outlet of the unit.
-1.2.2.5004	Return Dew Point	59.4	deg F	594		1	int16	ro	4127	Dew point temperature measured at the inlet of the unit.
-1.2.2.5005	Remote Sensor Minimum Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Minimum value of remote sensor temperature measurements.
-1.2.2.5006	Remote Sensor Maximum Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Maximum value of remote sensor temperature measurements.
-1.2.2.5007	Remote Sensor Average Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Average value of remote sensor temperature measurements.
-1.2.2.5008	Air Temperature Set Point	69.8	deg F	698		1	int16	rw	4127	Desired air temperature.  This set point is dependent upon which sensor is selected for control.
-1.2.2.5009	Cooling Proportional Band	4.3	deg F		43	1	uint16	rw	4128	Temperature control band above [Air Temperature Set Point]. If measured air temperature is within this band, cooling operations are proportionally controlled.
-1.2.2.5010	Heating Proportional Band	9.0	deg F		90	1	uint16	rw	4128	Temperature control band below [Air Temperature Set Point]. If measured air temperature is within this band, heating operations are proportionally controlled.
-1.2.2.5011	Air Temperature Dead Band	0.4	deg F		4	1	uint16	rw	4128	Value that is divided evenly to form a temperature range above and below [Air Temperature Set Point]. If measured air temperature is within this range, no heating or cooling will occur.
-1.2.2.5014	High Supply Air Temperature Threshold	80.1	deg F	801		1	int16	rw	4127	Threshold value used in the [Supply Air Over Temperature] event.
-1.2.2.5018	Low Supply Air Temperature Threshold	46.4	deg F	464		1	int16	rw	4127	Threshold value used in the [Supply Air Under Temperature] event.
-1.2.2.5022	High Return Air Temperature Threshold	104.0	deg F	1040		1	int16	rw	4127	Threshold value used in the [Return Air Over Temperature] event.
-1.2.2.5048	Fan Speed Proportional Band	7.2	deg F		72	1	uint16	rw	4128	Temperature control band above the temperature set point calculated for proportional fan speed control. If measured air temperature is within this band, fan speed operations are proportionally controlled.
-1.2.2.5059.1	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
-1.2.2.5059.2	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
-1.2.2.5059.3	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
-1.2.2.5059.4	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
-1.2.2.5059.5	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
-1.2.2.5059.6	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
-1.2.2.5059.7	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
-1.2.2.5059.8	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
-1.2.2.5059.9	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
-1.2.2.5059.10	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	ro	4127	Air temperature as measured by remote sensor.
-1.2.2.5668	Outlet Chilled Water Temperature	-58950	deg F	-58950		0	int16	ro	4127	Outlet Chilled Water Temperature
-1.2.100.4270	Customer Input 1	Inactive Event					event16	ro		Customer Input 1.
-1.2.100.4271	Customer Input 2	Inactive Event					event16	ro		Customer input 2.
-1.2.100.4272	Customer Input 3	Inactive Event					event16	ro		Customer input 3.
-1.2.100.4273	Customer Input 4	Inactive Event					event16	ro		Customer input 4.
-1.2.100.4626	Supply Chilled Water Over Temp	Inactive Event					event16	ro		[Supply Fluid Temperature] has exceeded [High Supply Fluid Temperature Threshold].
-1.2.100.4651	Supply Fluid Temp Sensor Issue	Inactive Event					event16	ro		The supply fluid temperature sensor is disconnected or the signal is out of range.
-1.2.100.4669	Compressor 1 High Head Pressure	Inactive Event					event16	ro		Compressor 1 high head pressure.
-1.2.100.4681	Compressor 1 Short Cycle	Inactive Event					event16	ro		Compressor 1 short cycle.  A short cycle is defined as turning on and off a number of times over a set time period.
-1.2.100.4703	Chilled Water Control Valve Failure	Inactive Event					event16	ro		Chilled water valve out of position. Chilled water control valve position does not match expected value.
-1.2.100.4714	Shutdown - Loss Of Power	Inactive Event					event16	ro		System lost power. This event becomes active when the unit is powered on following an unexpected loss of power.  This event remains active for 90 minutes.
-1.2.100.4720	Smoke Detected	Inactive Event					event16	ro		Smoke detected.
-1.2.100.4723	Water Under Floor	Inactive Event					event16	ro		Water under the floor is detected.
-1.2.100.4726	Service Required	Inactive Event					event16	ro		Unit requires servicing.
-1.2.100.4980	Supply Chilled Water Loss of Flow	Inactive Event					event16	ro		Supply chilled water or glycol flow is too low.
-1.2.100.5015	Supply Air Over Temperature	Inactive Event					event16	ro		Supply air high temperature event.
-1.2.100.5019	Supply Air Under Temperature	Inactive Event					event16	ro		Supply air low temperature event.
-1.2.100.5023	Return Air Over Temperature	Inactive Event					event16	ro		Return air high temperature event.
-1.2.100.5026	Supply Air Sensor Issue	Inactive Event					event16	ro		The air sensor at the outlet of the unit is disconnected or the signal is out of range.
-1.2.100.5034	High Return Humidity	Inactive Event					event16	ro		Return air high humidity event.
-1.2.100.5036	Low Return Humidity	Inactive Event					event16	ro		Return air low humidity event.
-1.2.100.5037	Humidifier Hours Exceeded	Inactive Event					event16	ro		Operating hours for the humidifier have exceeded the threshold.
-1.2.100.5038	Dehumidifier Hours Exceeded	Inactive Event					event16	ro		Operating hours for the dehumidifier have exceeded the threshold.
-1.2.100.5039	Humidifier Under Current	Inactive Event					event16	ro		The electrical current to the humidifier has dropped below its lower threshold.
-1.2.100.5040	Humidifier Over Current	Inactive Event					event16	ro		The electrical current to the humidifier has exceeded its upper threshold.
-1.2.100.5041	Humidifier Low Water	Inactive Event					event16	ro		The water level in the humidifier has dropped below its threshold.
-1.2.100.5042	Humidifier Cylinder Worn	Inactive Event					event16	ro		Humidifier cylinder is not operating properly and needs to be replaced.
-1.2.100.5043	Humidifier Issue	Inactive Event					event16	ro		Humidifier issue detected, causing it to be locked out.
-1.2.100.5044	Ext Humidifier Lockout	Inactive Event					event16	ro		The humidifier is shut down and disabled by an external input signal.
-1.2.100.5045	Humidifier Control Board Not Detected	Inactive Event					event16	ro		Humidifier control board is required to be connected, but no signal is detected.
-1.2.100.5046	Return Humidity Out Of Proportional Band	Inactive Event					event16	ro		[Return Humidity] has exceeded the upper limit of [Dehumidification Proportional Band], or has dropped below the lower limit of [Humidification Proportional Band] ], for an extended period of time.
-1.2.100.5053	Loss of Air Flow	Inactive Event					event16	ro		No air flow through the unit due to failure of all fans.
-1.2.100.5054	Fan Hours Exceeded	Inactive Event					event16	ro		Operating hours for the unit blower fan have exceeded the threshold.
-1.2.100.5055	Top Fan Issue	Inactive Event					event16	ro		The top fan is not operating within its normal parameters.
-1.2.100.5056	Bottom Fan Issue	Inactive Event					event16	ro		The bottom fan is not operating within its normal parameters.
-1.2.100.5060.1	Remote Sensor Issue	Inactive Event					event16	ro		Remote sensor is disconnected or the signal is out of range.
-1.2.100.5060.2	Remote Sensor Issue	Inactive Event					event16	ro		Remote sensor is disconnected or the signal is out of range.
-1.2.100.5060.3	Remote Sensor Issue	Inactive Event					event16	ro		Remote sensor is disconnected or the signal is out of range.
-1.2.100.5060.4	Remote Sensor Issue	Inactive Event					event16	ro		Remote sensor is disconnected or the signal is out of range.
-1.2.100.5060.5	Remote Sensor Issue	Inactive Event					event16	ro		Remote sensor is disconnected or the signal is out of range.
-1.2.100.5060.6	Remote Sensor Issue	Inactive Event					event16	ro		Remote sensor is disconnected or the signal is out of range.
-1.2.100.5060.7	Remote Sensor Issue	Inactive Event					event16	ro		Remote sensor is disconnected or the signal is out of range.
-1.2.100.5060.8	Remote Sensor Issue	Inactive Event					event16	ro		Remote sensor is disconnected or the signal is out of range.
-1.2.100.5060.9	Remote Sensor Issue	Inactive Event					event16	ro		Remote sensor is disconnected or the signal is out of range.
-1.2.100.5060.10	Remote Sensor Issue	Inactive Event					event16	ro		Remote sensor is disconnected or the signal is out of range.
-1.2.100.5062	Compressor 1 Low Suction Pressure	Inactive Event					event16	ro		Compressor 1 low suction pressure.
-1.2.100.5063	Compressor 1 Hours Exceeded	Inactive Event					event16	ro		Operating hours for compressor 1 have exceeded the threshold.
-1.2.100.5064	Dig Scroll Comp 1 Temp Sensor Issue	Inactive Event					event16	ro		Digital scroll compressor 1 temperature sensor is disconnected or the signal is out of range.
-1.2.100.5065	Dig Scroll Comp 1 Over Temp	Inactive Event					event16	ro		Digital scroll compressor 1 shut off because its head temperature has exceeded the upper threshold.
-1.2.100.5066	Compressor 1 Low Pressure Transducer Issue	Inactive Event					event16	ro		Compressor 1 low pressure transducer is disconnected or the signal is out of range.
-1.2.100.5067	Ext Compressor Lockout	Inactive Event					event16	ro		The compressor is shut down and disabled by an external input signal.
-1.2.100.5068	Reheater Over Temperature	Inactive Event					event16	ro		The temperature of the reheater has exceeded its threshold.
-1.2.100.5069	Electric Reheater Hours Exceeded	Inactive Event					event16	ro		Operating hours for electric reheater have exceeded the threshold.
-1.2.100.5070	Ext Reheat Lockout	Inactive Event					event16	ro		The reheater is shut down and disabled by an external input signal.
-1.2.100.5071	Condenser 1 Issue	Inactive Event					event16	ro		Condenser 1 is not operating within its normal parameters.
-1.2.100.5104	Ext Over Temperature	Inactive Event					event16	ro		A temperature has exceeded its threshold, as indicated by an external input signal.
-1.2.100.5105	Ext Loss of Flow	Inactive Event					event16	ro		Loss of flow is detected, as indicated by an external input signal.
-1.2.100.5106	Ext Condenser Pump High Water	Inactive Event					event16	ro		High water is detected in the condensate pump by the auxiliary float, as indicated by an external input signal.
-1.2.100.5107	Ext Standby Glycol Pump On	Inactive Event					event16	ro		The standby glycol pump is on, as indicated by an external input signal.
-1.2.100.5108	External Fire Detected	Inactive Event					event16	ro		Fire detected, as indicated by an external input signal.
-1.2.100.5109	Unit On	Inactive Event					event16	ro		Unit was turned on.
-1.2.100.5110	Unit Off	Inactive Event					event16	ro		Unit was turned off.
-1.2.100.5111	Unit Standby	Inactive Event					event16	ro		Unit was placed in standby mode.
-1.2.100.5112	Unit Partial Shutdown	Inactive Event					event16	ro		An event has occurred requiring some system components to be shutdown and disabled.
-1.2.100.5113	Unit Shutdown	Inactive Event					event16	ro		An event has occurred requiring the unit to be shutdown and disabled to prevent damage to the system.
-1.2.100.5114	Water Leakage Detector Sensor Issue	Inactive Event					event16	ro		The water leakage detector sensor is disconnected or the signal is out of range.
-1.2.100.5115	BMS Communications Timeout	Inactive Event					event16	ro		Building Management System (or external monitoring system) has not communicated with the system within the expected timeframe.
-1.2.100.5116	Maintenance Due	Inactive Event					event16	ro		The calculated maintenance date has been reached.
-1.2.100.5117	Maintenance Completed	Inactive Event					event16	ro		Maintenance has been completed on the unit.
-1.2.100.5118	Clogged Air Filter	Inactive Event					event16	ro		Air filter is dirty and needs to be (cleaned or) replaced.
-1.2.100.5119	RAM Battery Issue	Inactive Event					event16	ro		RAM or RAM backup battery is not operating correctly.
-1.2.100.5120	Master Unit Communication Lost	Inactive Event					event16	ro		Communication with master unit has been lost.
-1.2.100.5121	High Power Shutdown	Inactive Event					event16	ro		Supply to high power components has been shutdown.
-1.2.100.5146	Compressor 1 Pump Down Issue	Inactive Event					event16	ro		Unable to pump down suction-side pressure during compressor 1 shutdown.
-1.2.100.5147	Return Air Sensor Issue	Inactive Event					event16	ro		The air sensor at the inlet of the unit is disconnected or the signal is out of range.
-1.2.100.5148	Compressor 1 High Pressure Transducer Issue	Inactive Event					event16	ro		Compressor 1 high pressure transducer is disconnected or the signal is out of range.
-1.2.100.5418	Unit Code Missing	Inactive Event					event16	ro		Unit code has not been entered and saved.
-1.2.100.5513	Compressor Capacity Reduced	Inactive Event					event16	ro		Compressor capacity has been reduced.
-1.2.100.5588	Unspecified General Event	Inactive Event					event16	ro		One or more unspecified events active. See local unit display for further details.
-1.2.100.5629	Static Pressure Sensor Issue	Inactive Event					event16	ro		The static pressure sensor is disconnected or the signal is out of range.
-1.2.100.5910	Static Pressure Sensor Out of Range	Inactive Event					event16	ro		Static pressure sensor signal is out of its configured range.
-1.2.100.5911	Fluid Temperature Sensor Issue	Inactive Event					event16	ro		The fluid temperature sensor is disconnected or the signal is out of range.
-1.2.100.5912	Fluid Flow Sensor Issue	Inactive Event					event16	ro		The fluid flow sensor is disconnected or the signal is out of range.
-1.2.100.6105	External Condenser TVSS Issue	Inactive Event					event16	ro		The condenser Transient Voltage Surge Suppressor or Surge Protection Device has failed, as indicated by an external input signal.
-1.2.100.6232	SEC Unspecified General Event	Inactive Event					event16	ro		One or more unspecified events active for the Superheat and Envelope Controller.  See local unit display for further details.
-1.2.100.6233	SEC Communication Lost	Inactive Event					event16	ro		Communication with the Superheat and Envelope Controller has been lost.  The event is deactivated when communication is re-established.
-1.2.100.6236	Power Source 'A' Issue	Inactive Event					event16	ro		No power is detected at power source input 'A'.
-1.2.100.6237	Power Source 'B' Issue	Inactive Event					event16	ro		No power is detected at power source input 'B'.
-1.3.20.1.4123	System Status	Normal Operation			1		enum	ro		The operating status for the system
-1.3.20.1.4240	System Model Number	Sensor					text	ro		System model identifier
-1.3.20.1.4553	Server Class	MONITOR			5		enum	ro		The general classification for this system
-1.3.20.1.6109	Sensor Order Identifier - Slot 01						text	rw		Sensor serial number of the sensor intended for slot 1.
-1.3.20.1.6110	Sensor Order Identifier - Slot 02						text	rw		Sensor serial number of the sensor intended for slot 2.
-1.3.20.1.6111	Sensor Order Identifier - Slot 03						text	rw		Sensor serial number of the sensor intended for slot 3.
-1.3.20.1.6112	Sensor Order Identifier - Slot 04						text	rw		Sensor serial number of the sensor intended for slot 4.
-1.3.20.1.6113	Sensor Order Identifier - Slot 05						text	rw		Sensor serial number of the sensor intended for slot 5.
-1.3.20.1.6114	Sensor Order Identifier - Slot 06						text	rw		Sensor serial number of the sensor intended for slot 6.
-1.3.20.1.6115	Sensor Order Identifier - Slot 07						text	rw		Sensor serial number of the sensor intended for slot 7.
-1.3.20.1.6116	Sensor Order Identifier - Slot 08						text	rw		Sensor serial number of the sensor intended for slot 8.
-1.3.20.1.6117	Sensor Order Identifier - Slot 09						text	rw		Sensor serial number of the sensor intended for slot 9.
-1.3.20.1.6118	Sensor Order Identifier - Slot 10						text	rw		Sensor serial number of the sensor intended for slot 10.
-1.3.20.100.5423	Too Many Sensors	Inactive Event					event16	ro		The number of sensors connected to the PDU exceeds the allowable limit
-1.3.20.100.6119	Slots not available	Inactive Event					event16	ro		The number of sensors exceeds the number of allocated slots and cannot be displayed.
+1.2.1.4096	System Input RMS A-N	Unavailable	VAC	2147483647		0	int16	read-only	4100	The System Input RMS Voltage between Phase A and Neutral
+1.2.1.4097	System Input RMS A-B	Unavailable	VAC	2147483647		0	int16	read-only	4100	The System Input RMS Voltage between Phase A and Phase B
+1.2.1.4098	System Input RMS B-N	Unavailable	VAC	2147483647		0	int16	read-only	4100	The System Input RMS Voltage between Phase B and Neutral
+1.2.1.4099	System Input RMS B-C	Unavailable	VAC	2147483647		0	int16	read-only	4100	The System Input RMS Voltage between Phase B and Phase C
+1.2.1.4100	System Input RMS C-N	Unavailable	VAC	2147483647		0	int16	read-only	4100	The System Input RMS Voltage between Phase C and Neutral
+1.2.1.4101	System Input RMS C-A	Unavailable	VAC	2147483647		0	int16	read-only	4100	The System Input RMS Voltage between Phase C and Phase A
+1.2.1.4113	System Input RMS Current Phase A	Unavailable	A AC	2147483647		0	int16	read-only	4106	The system input RMS current for Phase A
+1.2.1.4114	System Input RMS Current Phase B	Unavailable	A AC	2147483647		0	int16	read-only	4106	The system input RMS current for Phase B
+1.2.1.4115	System Input RMS Current Phase C	Unavailable	A AC	2147483647		0	int16	read-only	4106	The system input RMS current for Phase C
+1.2.1.4123	System Status	Normal Operation			1		enum	read-only		The operating status for the system
+1.2.1.4240	System Model Number	Liebert CRV					text	read-only		System model identifier
+1.2.1.4291	Return Air Temperature	22.5	deg C	225		1	int16	read-only	4125	The temperature of the inlet air
+1.2.1.4293	System Date and Time	2026-11-23 15:25:51					time32	read-write		The system date and time
+1.2.1.4329	System Name	UNIT-1					text	read-write		End user assigned name for the system
+1.2.1.4553	Server Class	AIR			2		enum	read-only		The general classification for this system
+1.2.1.4624	Supply Fluid Temperature	21.5	deg C	215		1	int16	read-only	4125	Supply chilled water or glycol temperature.
+1.2.1.4625	High Supply Fluid Temperature Threshold	99.0	deg C	990		1	int16	read-write	4125	Threshold value used in the [Supply Chilled Water Over Temp] event.
+1.2.1.4706	Unit Operating State	on			1		enum	read-only		Current operating state of the unit.
+1.2.1.4707	Unit Control Mode	Internal (Auto)			0		enum	read-only		Unit control mode.
+1.2.1.4710	Auto Restart Delay	5	sec		5	0	uint16	read-write	4097	If power is lost, the control will delay this amount of time after power is restored before restarting the unit.
+1.2.1.4715	Shutdown - Loss Of Power - Event Control	disabled			0		enum	read-write		Enable/disable the activation of the [Shutdown - Loss Of Power] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.4716	Shutdown - Loss Of Power - Event Type	Message			0		enum	read-write		The event type for the [Shutdown - Loss Of Power] event.
+1.2.1.4718	Customer Input 1 - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Customer Input 1] event.  If set to 'disabled', the event will not be annunciated.  This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.4719	Customer Input 1 - Event Type	Alarm			2		enum	read-write		The event type for the [Customer Input 1] event.
+1.2.1.4721	Smoke Detected - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Smoke Detected] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.4722	Smoke Detected - Event Type	Alarm			2		enum	read-write		The event type for the [Smoke Detected] event.
+1.2.1.4724	Water Under Floor - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Water Under Floor] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.4725	Water Under Floor - Event Type	Alarm			2		enum	read-write		The event type for the [Water Under Floor] event.
+1.2.1.4727	Service Required - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Service Required] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.4728	Service Required - Event Type	Alarm			2		enum	read-write		The event type for the [Service Required] event.
+1.2.1.4868	Calculated Next Maintenance Month	65409			65409	0	uint16	read-only	0	Calculated month of the next scheduled maintenance. Used in conjunction with [Calculated Next Maintenance Year].
+1.2.1.4869	Calculated Next Maintenance Year	Unavailable			4294967295	0	uint16	read-only	0	Calculated year of the next scheduled maintenance. Used in conjunction with [Calculated Next Maintenance Month].
+1.2.1.4870	Maintenance Ramp	Unavailable	%		4294967295	0	uint16	read-only	4124	The ratio of operations performed to the calculated operations available between maintenance intervals.
+1.2.1.5002	Supply Air Temperature	21.2	deg C	212		1	int16	read-only	4125	Air temperature measured at the outlet of the unit.
+1.2.1.5004	Return Dew Point	15.2	deg C	152		1	int16	read-only	4125	Dew point temperature measured at the inlet of the unit.
+1.2.1.5005	Remote Sensor Minimum Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Minimum value of remote sensor temperature measurements.
+1.2.1.5006	Remote Sensor Maximum Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Maximum value of remote sensor temperature measurements.
+1.2.1.5007	Remote Sensor Average Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Average value of remote sensor temperature measurements.
+1.2.1.5008	Air Temperature Set Point	21.0	deg C	210		1	int16	read-write	4125	Desired air temperature.  This set point is dependent upon which sensor is selected for control.
+1.2.1.5009	Cooling Proportional Band	2.4	deg C		24	1	uint16	read-write	4126	Temperature control band above [Air Temperature Set Point]. If measured air temperature is within this band, cooling operations are proportionally controlled.
+1.2.1.5010	Heating Proportional Band	5.0	deg C		50	1	uint16	read-write	4126	Temperature control band below [Air Temperature Set Point]. If measured air temperature is within this band, heating operations are proportionally controlled.
+1.2.1.5011	Air Temperature Dead Band	0.2	deg C		2	1	uint16	read-write	4126	Value that is divided evenly to form a temperature range above and below [Air Temperature Set Point]. If measured air temperature is within this range, no heating or cooling will occur.
+1.2.1.5012	Air Temperature Control Sensor	Supply			0		enum	read-write		Sensor from which air temperature measurements will be used for cooling and heating control.
+1.2.1.5013	Remote Sensor Temperature Calculation	Average			0		enum	read-write		Calculation method applied to temperature readings from the remote sensors to determine a single temperature measurement value for cooling and heating control.
+1.2.1.5014	High Supply Air Temperature Threshold	26.7	deg C	267		1	int16	read-write	4125	Threshold value used in the [Supply Air Over Temperature] event.
+1.2.1.5018	Low Supply Air Temperature Threshold	8.0	deg C	80		1	int16	read-write	4125	Threshold value used in the [Supply Air Under Temperature] event.
+1.2.1.5022	High Return Air Temperature Threshold	40.0	deg C	400		1	int16	read-write	4125	Threshold value used in the [Return Air Over Temperature] event.
+1.2.1.5027	Supply Humidity	69.4	% RH		694	1	uint16	read-only	4132	Relative humidity at the outlet of the unit.
+1.2.1.5028	Return Humidity	63.5	% RH		635	1	uint16	read-only	4132	Relative humidity measured at the inlet of the unit.
+1.2.1.5029	Humidity Set Point	45	% RH		45	0	uint16	read-write	4132	Desired relative humidity.
+1.2.1.5030	Humidification Proportional Band	5	% RH		5	0	uint16	read-write	4132	Humidity control band below [Humidity Set Point]. If measured humidity is within this band, humidification operations are proportionally controlled.
+1.2.1.5031	Dehumidification Proportional Band	5	% RH		5	0	uint16	read-write	4132	Humidity control band above [Humidity Set Point]. If measured humidity is within this band, dehumidification operations are proportionally controlled.
+1.2.1.5032	Humidity Dead Band	5.0	% RH		50	1	uint16	read-write	4132	Value that is divided evenly to form a range above and below [Humidity Set Point]. If measured humidity is within this range, no humidification or dehumidification will occur.
+1.2.1.5033	High Return Humidity Threshold	99.0	% RH		990	1	uint16	read-write	4132	Threshold value used in the [High Return Humidity] event.
+1.2.1.5035	Low Return Humidity Threshold	1.0	% RH		10	1	uint16	read-write	4132	Threshold value used in the [Low Return Humidity] event.
+1.2.1.5047	Fan Control Mode	Internal (Auto)			0		enum	read-write		Fan control mode.   Allowable modes are: (0) Auto - Fan speed is controlled via the selected fan control sensor, and, (1) Manual - Fan will operate at a fixed speed.
+1.2.1.5048	Fan Speed Proportional Band	4.0	deg C		40	1	uint16	read-write	4126	Temperature control band above the temperature set point calculated for proportional fan speed control. If measured air temperature is within this band, fan speed operations are proportionally controlled.
+1.2.1.5049	Fan Speed Manual Set Point	70	%		70	0	uint16	read-write	4124	Manual fan speed.
+1.2.1.5050	Fan Speed Maximum Set Point	50	%		50	0	uint16	read-write	4124	Maximum fan speed.
+1.2.1.5051	Fan Speed Minimum Set Point	40	%		40	0	uint16	read-write	4124	Minimum fan speed.
+1.2.1.5052	Fan Control Sensor	Return			2		enum	read-write		Sensor from which air temperature measurements will be used for fan speed control.
+1.2.1.5057.1	Remote Sensor Name						text	read-write		Name assigned to remote sensor.
+1.2.1.5057.2	Remote Sensor Name						text	read-write		Name assigned to remote sensor.
+1.2.1.5057.3	Remote Sensor Name						text	read-write		Name assigned to remote sensor.
+1.2.1.5057.4	Remote Sensor Name						text	read-write		Name assigned to remote sensor.
+1.2.1.5057.5	Remote Sensor Name						text	read-write		Name assigned to remote sensor.
+1.2.1.5057.6	Remote Sensor Name						text	read-write		Name assigned to remote sensor.
+1.2.1.5057.7	Remote Sensor Name						text	read-write		Name assigned to remote sensor.
+1.2.1.5057.8	Remote Sensor Name						text	read-write		Name assigned to remote sensor.
+1.2.1.5057.9	Remote Sensor Name						text	read-write		Name assigned to remote sensor.
+1.2.1.5057.10	Remote Sensor Name						text	read-write		Name assigned to remote sensor.
+1.2.1.5058.1	Remote Sensor Function	Disable			0		enum	read-write		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
+1.2.1.5058.2	Remote Sensor Function	Disable			0		enum	read-write		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
+1.2.1.5058.3	Remote Sensor Function	Disable			0		enum	read-write		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
+1.2.1.5058.4	Remote Sensor Function	Disable			0		enum	read-write		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
+1.2.1.5058.5	Remote Sensor Function	Disable			0		enum	read-write		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
+1.2.1.5058.6	Remote Sensor Function	Disable			0		enum	read-write		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
+1.2.1.5058.7	Remote Sensor Function	Disable			0		enum	read-write		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
+1.2.1.5058.8	Remote Sensor Function	Disable			0		enum	read-write		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
+1.2.1.5058.9	Remote Sensor Function	Disable			0		enum	read-write		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
+1.2.1.5058.10	Remote Sensor Function	Disable			0		enum	read-write		Function assigned to remote sensor.  Available values are: (0) Control - sensor will be used in calculation of remote sensor temperature that may be used for heating and cooling control, (1) Reference - sensor will not be used in calculation of remote sens
+1.2.1.5059.1	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.2	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.3	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.4	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.5	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.6	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.7	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.8	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.9	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Air temperature as measured by remote sensor.
+1.2.1.5059.10	Remote Sensor Temperature	Unavailable	deg C	2147483647		1	int16	read-only	4125	Air temperature as measured by remote sensor.
+1.2.1.5074	Unit Operating State Reason	Reason Unknown			0		enum	read-only		The reason the unit is in the current operating state.
+1.2.1.5075	BMS Timeout Period	0	min		0	0	uint16	read-write	4098	Timeframe within which the Building Management System (or external monitoring system) must communicate with the system to avoid a timeout.
+1.2.1.5076	Operating Efficiency	75	%		75	0	uint16	read-only	4124	The ratio of cooling energy provided to the amount of total energy being used.
+1.2.1.5077	Fan Speed	40	%		40	0	uint16	read-only	4124	Fan speed expressed as a percentage of the maximum rated speed.
+1.2.1.5078	Cooling Capacity (Primary)	38	%		38	0	uint16	read-only	4124	Compressor utilization or chilled water valve position, based on unit type.
+1.2.1.5079	Dehumidifier Utilization	Unavailable	%		4294967295	0	uint16	read-only	4124	Present dehumidifier utilization expressed as a percentage of the maximum rated capacity.
+1.2.1.5080	Reheat Utilization	0	%		0	0	uint16	read-only	4124	Present reheating utilization expressed as a percentage of the maximum rated capacity.
+1.2.1.5081	Humidifier Utilization	Unavailable	%		4294967295	0	uint16	read-only	4124	Present humidifier utilization expressed as a percentage of the maximum rated capacity.
+1.2.1.5082	Ext Loss of Flow - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Ext Loss of Flow] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.5083	Ext Loss of Flow - Event Type	Alarm			2		enum	read-write		The event type for the [Ext Loss of Flow] event.
+1.2.1.5084	Ext Reheat Lockout - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Ext Reheat Lockout] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.5085	Ext Reheat Lockout - Event Type	Alarm			2		enum	read-write		The event type for the [Ext Reheat Lockout] event.
+1.2.1.5086	Ext Humidifier Lockout - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Ext Humidifier Lockout] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.5087	Ext Humidifier Lockout - Event Type	Warning			1		enum	read-write		The event type for the [Ext Humidifier Lockout] event.
+1.2.1.5088	Ext Compressor Lockout - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Ext Compressor Lockout] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.5089	Ext Compressor Lockout - Event Type	Alarm			2		enum	read-write		The event type for the [Ext Compressor Lockout] event.
+1.2.1.5090	Ext Over Temperature - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Ext Over Temperature] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.5091	Ext Over Temperature - Event Type	Alarm			2		enum	read-write		The event type for the [Ext Over Temperature] event.
+1.2.1.5092	Condenser VFD Issue - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Condenser VFD Issue] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.5093	Condenser VFD Issue - Event Type	Alarm			2		enum	read-write		The event type for the [Condenser VFD Issue] event.
+1.2.1.5094	Condenser TVSS Issue - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Condenser TVSS or SPD Issue] event (Transient Voltage Surge Suppressor or Surge Protection Device). If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active
+1.2.1.5095	Condenser TVSS Issue - Event Type	Alarm			2		enum	read-write		The event type for the [Condenser TVSS or SPD Issue] event (Transient Voltage Surge Suppressor or Surge Protection Device).
+1.2.1.5096	Condenser 1 Issue - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Condenser 1 Issue] event. If set to 'disabled', the event will not be annunciated. This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.5097	Condenser 1 Issue - Event Type	Warning			1		enum	read-write		The event type for the [Condenser 1 Issue] event.
+1.2.1.5098	Customer Input 2 - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Customer Input 2] event.  If set to 'disabled', the event will not be annunciated.  This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.5099	Customer Input 2 - Event Type	Alarm			2		enum	read-write		The event type for the [Customer Input 2] event.
+1.2.1.5100	Customer Input 3 - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Customer Input 3] event.  If set to 'disabled', the event will not be annunciated.  This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.5101	Customer Input 3 - Event Type	Alarm			2		enum	read-write		The event type for the [Customer Input 3] event.
+1.2.1.5102	Customer Input 4 - Event Control	enabled			1		enum	read-write		Enable/disable the activation of the [Customer Input 4] event.  If set to 'disabled', the event will not be annunciated.  This implies that the event will not be placed in any active event list or in any event history list.
+1.2.1.5103	Customer Input 4 - Event Type	Alarm			2		enum	read-write		The event type for the [Customer Input 4] event.
+1.2.1.5143	System On/Off Control	on			1		enum	read-write		Turn system functionality on or off.
+1.2.1.5667	SuperSaver request sent to CApCom Master	0	%	0		0	int16	read-only	4124	SuperSaver request sent to CApCom Master
+1.2.1.5668	Outlet Chilled Water Temperature	-32768	deg C	-32768		0	int16	read-only	4125	Outlet Chilled Water Temperature
+1.2.1.5669	Water Flow Rate (l/min)	-32768	l/min	-32768		0	int16	read-only	4158	Water Flow Rate (l/min)
+1.2.1.5670	Water Flow Rate (m3/h)	-32768	m3/h	-32768		0	int16	read-only	4155	Water Flow Rate (m3/h)
+1.2.1.5671	Cooling Capacity in KW	-32768	kW	-32768		0	int16	read-only	4115	Cooling Capacity in KW
+1.2.1.5672	Automatic Transfer Switch - Active Power Supply	Power Supply 1			0		enum	read-only		Indicates which power supply is in use by the Automatic Transfer Switch.
+1.2.1.5673	Automatic Transfer Switch - Power Supply 1 Status	OK			0		enum	read-only		Status of power supply 1 in Automatic Transfer Switch.
+1.2.1.5674	Automatic Transfer Switch - Power Supply 2 Status	OK			0		enum	read-only		Status of power supply 2 in Automatic Transfer Switch.
+1.2.1.5675	Power Meter Status	0		0		0	int16	read-only	0	Power Meter Status
+1.2.1.5900	Energy Consumption	Unavailable	kWH	2147483647		0	int32	read-only	4117	Energy consumption since the last reset of this value.
+1.2.1.5901	Instantaneous Power	Unavailable	W	2147483647		0	int32	read-only	4114	Total electrical power currently being consumed.
+1.2.2.4291	Return Air Temperature	72.5	deg F	725		1	int16	read-only	4127	The temperature of the inlet air
+1.2.2.4624	Supply Fluid Temperature	70.7	deg F	707		1	int16	read-only	4127	Supply chilled water or glycol temperature.
+1.2.2.4625	High Supply Fluid Temperature Threshold	210.2	deg F	2102		1	int16	read-write	4127	Threshold value used in the [Supply Chilled Water Over Temp] event.
+1.2.2.5002	Supply Air Temperature	70.2	deg F	702		1	int16	read-only	4127	Air temperature measured at the outlet of the unit.
+1.2.2.5004	Return Dew Point	59.4	deg F	594		1	int16	read-only	4127	Dew point temperature measured at the inlet of the unit.
+1.2.2.5005	Remote Sensor Minimum Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Minimum value of remote sensor temperature measurements.
+1.2.2.5006	Remote Sensor Maximum Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Maximum value of remote sensor temperature measurements.
+1.2.2.5007	Remote Sensor Average Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Average value of remote sensor temperature measurements.
+1.2.2.5008	Air Temperature Set Point	69.8	deg F	698		1	int16	read-write	4127	Desired air temperature.  This set point is dependent upon which sensor is selected for control.
+1.2.2.5009	Cooling Proportional Band	4.3	deg F		43	1	uint16	read-write	4128	Temperature control band above [Air Temperature Set Point]. If measured air temperature is within this band, cooling operations are proportionally controlled.
+1.2.2.5010	Heating Proportional Band	9.0	deg F		90	1	uint16	read-write	4128	Temperature control band below [Air Temperature Set Point]. If measured air temperature is within this band, heating operations are proportionally controlled.
+1.2.2.5011	Air Temperature Dead Band	0.4	deg F		4	1	uint16	read-write	4128	Value that is divided evenly to form a temperature range above and below [Air Temperature Set Point]. If measured air temperature is within this range, no heating or cooling will occur.
+1.2.2.5014	High Supply Air Temperature Threshold	80.1	deg F	801		1	int16	read-write	4127	Threshold value used in the [Supply Air Over Temperature] event.
+1.2.2.5018	Low Supply Air Temperature Threshold	46.4	deg F	464		1	int16	read-write	4127	Threshold value used in the [Supply Air Under Temperature] event.
+1.2.2.5022	High Return Air Temperature Threshold	104.0	deg F	1040		1	int16	read-write	4127	Threshold value used in the [Return Air Over Temperature] event.
+1.2.2.5048	Fan Speed Proportional Band	7.2	deg F		72	1	uint16	read-write	4128	Temperature control band above the temperature set point calculated for proportional fan speed control. If measured air temperature is within this band, fan speed operations are proportionally controlled.
+1.2.2.5059.1	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.2	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.3	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.4	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.5	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.6	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.7	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.8	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.9	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Air temperature as measured by remote sensor.
+1.2.2.5059.10	Remote Sensor Temperature	Unavailable	deg F	2147483647		1	int16	read-only	4127	Air temperature as measured by remote sensor.
+1.2.2.5668	Outlet Chilled Water Temperature	-58950	deg F	-58950		0	int16	read-only	4127	Outlet Chilled Water Temperature
+1.2.100.4270	Customer Input 1	Inactive Event					event16	read-only		Customer Input 1.
+1.2.100.4271	Customer Input 2	Inactive Event					event16	read-only		Customer input 2.
+1.2.100.4272	Customer Input 3	Inactive Event					event16	read-only		Customer input 3.
+1.2.100.4273	Customer Input 4	Inactive Event					event16	read-only		Customer input 4.
+1.2.100.4626	Supply Chilled Water Over Temp	Inactive Event					event16	read-only		[Supply Fluid Temperature] has exceeded [High Supply Fluid Temperature Threshold].
+1.2.100.4651	Supply Fluid Temp Sensor Issue	Inactive Event					event16	read-only		The supply fluid temperature sensor is disconnected or the signal is out of range.
+1.2.100.4669	Compressor 1 High Head Pressure	Inactive Event					event16	read-only		Compressor 1 high head pressure.
+1.2.100.4681	Compressor 1 Short Cycle	Inactive Event					event16	read-only		Compressor 1 short cycle.  A short cycle is defined as turning on and off a number of times over a set time period.
+1.2.100.4703	Chilled Water Control Valve Failure	Inactive Event					event16	read-only		Chilled water valve out of position. Chilled water control valve position does not match expected value.
+1.2.100.4714	Shutdown - Loss Of Power	Inactive Event					event16	read-only		System lost power. This event becomes active when the unit is powered on following an unexpected loss of power.  This event remains active for 90 minutes.
+1.2.100.4720	Smoke Detected	Inactive Event					event16	read-only		Smoke detected.
+1.2.100.4723	Water Under Floor	Inactive Event					event16	read-only		Water under the floor is detected.
+1.2.100.4726	Service Required	Inactive Event					event16	read-only		Unit requires servicing.
+1.2.100.4980	Supply Chilled Water Loss of Flow	Inactive Event					event16	read-only		Supply chilled water or glycol flow is too low.
+1.2.100.5015	Supply Air Over Temperature	Inactive Event					event16	read-only		Supply air high temperature event.
+1.2.100.5019	Supply Air Under Temperature	Inactive Event					event16	read-only		Supply air low temperature event.
+1.2.100.5023	Return Air Over Temperature	Inactive Event					event16	read-only		Return air high temperature event.
+1.2.100.5026	Supply Air Sensor Issue	Inactive Event					event16	read-only		The air sensor at the outlet of the unit is disconnected or the signal is out of range.
+1.2.100.5034	High Return Humidity	Inactive Event					event16	read-only		Return air high humidity event.
+1.2.100.5036	Low Return Humidity	Inactive Event					event16	read-only		Return air low humidity event.
+1.2.100.5037	Humidifier Hours Exceeded	Inactive Event					event16	read-only		Operating hours for the humidifier have exceeded the threshold.
+1.2.100.5038	Dehumidifier Hours Exceeded	Inactive Event					event16	read-only		Operating hours for the dehumidifier have exceeded the threshold.
+1.2.100.5039	Humidifier Under Current	Inactive Event					event16	read-only		The electrical current to the humidifier has dropped below its lower threshold.
+1.2.100.5040	Humidifier Over Current	Inactive Event					event16	read-only		The electrical current to the humidifier has exceeded its upper threshold.
+1.2.100.5041	Humidifier Low Water	Inactive Event					event16	read-only		The water level in the humidifier has dropped below its threshold.
+1.2.100.5042	Humidifier Cylinder Worn	Inactive Event					event16	read-only		Humidifier cylinder is not operating properly and needs to be replaced.
+1.2.100.5043	Humidifier Issue	Inactive Event					event16	read-only		Humidifier issue detected, causing it to be locked out.
+1.2.100.5044	Ext Humidifier Lockout	Inactive Event					event16	read-only		The humidifier is shut down and disabled by an external input signal.
+1.2.100.5045	Humidifier Control Board Not Detected	Inactive Event					event16	read-only		Humidifier control board is required to be connected, but no signal is detected.
+1.2.100.5046	Return Humidity Out Of Proportional Band	Inactive Event					event16	read-only		[Return Humidity] has exceeded the upper limit of [Dehumidification Proportional Band], or has dropped below the lower limit of [Humidification Proportional Band] ], for an extended period of time.
+1.2.100.5053	Loss of Air Flow	Inactive Event					event16	read-only		No air flow through the unit due to failure of all fans.
+1.2.100.5054	Fan Hours Exceeded	Inactive Event					event16	read-only		Operating hours for the unit blower fan have exceeded the threshold.
+1.2.100.5055	Top Fan Issue	Inactive Event					event16	read-only		The top fan is not operating within its normal parameters.
+1.2.100.5056	Bottom Fan Issue	Inactive Event					event16	read-only		The bottom fan is not operating within its normal parameters.
+1.2.100.5060.1	Remote Sensor Issue	Inactive Event					event16	read-only		Remote sensor is disconnected or the signal is out of range.
+1.2.100.5060.2	Remote Sensor Issue	Inactive Event					event16	read-only		Remote sensor is disconnected or the signal is out of range.
+1.2.100.5060.3	Remote Sensor Issue	Inactive Event					event16	read-only		Remote sensor is disconnected or the signal is out of range.
+1.2.100.5060.4	Remote Sensor Issue	Inactive Event					event16	read-only		Remote sensor is disconnected or the signal is out of range.
+1.2.100.5060.5	Remote Sensor Issue	Inactive Event					event16	read-only		Remote sensor is disconnected or the signal is out of range.
+1.2.100.5060.6	Remote Sensor Issue	Inactive Event					event16	read-only		Remote sensor is disconnected or the signal is out of range.
+1.2.100.5060.7	Remote Sensor Issue	Inactive Event					event16	read-only		Remote sensor is disconnected or the signal is out of range.
+1.2.100.5060.8	Remote Sensor Issue	Inactive Event					event16	read-only		Remote sensor is disconnected or the signal is out of range.
+1.2.100.5060.9	Remote Sensor Issue	Inactive Event					event16	read-only		Remote sensor is disconnected or the signal is out of range.
+1.2.100.5060.10	Remote Sensor Issue	Inactive Event					event16	read-only		Remote sensor is disconnected or the signal is out of range.
+1.2.100.5062	Compressor 1 Low Suction Pressure	Inactive Event					event16	read-only		Compressor 1 low suction pressure.
+1.2.100.5063	Compressor 1 Hours Exceeded	Inactive Event					event16	read-only		Operating hours for compressor 1 have exceeded the threshold.
+1.2.100.5064	Dig Scroll Comp 1 Temp Sensor Issue	Inactive Event					event16	read-only		Digital scroll compressor 1 temperature sensor is disconnected or the signal is out of range.
+1.2.100.5065	Dig Scroll Comp 1 Over Temp	Inactive Event					event16	read-only		Digital scroll compressor 1 shut off because its head temperature has exceeded the upper threshold.
+1.2.100.5066	Compressor 1 Low Pressure Transducer Issue	Inactive Event					event16	read-only		Compressor 1 low pressure transducer is disconnected or the signal is out of range.
+1.2.100.5067	Ext Compressor Lockout	Inactive Event					event16	read-only		The compressor is shut down and disabled by an external input signal.
+1.2.100.5068	Reheater Over Temperature	Inactive Event					event16	read-only		The temperature of the reheater has exceeded its threshold.
+1.2.100.5069	Electric Reheater Hours Exceeded	Inactive Event					event16	read-only		Operating hours for electric reheater have exceeded the threshold.
+1.2.100.5070	Ext Reheat Lockout	Inactive Event					event16	read-only		The reheater is shut down and disabled by an external input signal.
+1.2.100.5071	Condenser 1 Issue	Inactive Event					event16	read-only		Condenser 1 is not operating within its normal parameters.
+1.2.100.5104	Ext Over Temperature	Inactive Event					event16	read-only		A temperature has exceeded its threshold, as indicated by an external input signal.
+1.2.100.5105	Ext Loss of Flow	Inactive Event					event16	read-only		Loss of flow is detected, as indicated by an external input signal.
+1.2.100.5106	Ext Condenser Pump High Water	Inactive Event					event16	read-only		High water is detected in the condensate pump by the auxiliary float, as indicated by an external input signal.
+1.2.100.5107	Ext Standby Glycol Pump On	Inactive Event					event16	read-only		The standby glycol pump is on, as indicated by an external input signal.
+1.2.100.5108	External Fire Detected	Inactive Event					event16	read-only		Fire detected, as indicated by an external input signal.
+1.2.100.5109	Unit On	Inactive Event					event16	read-only		Unit was turned on.
+1.2.100.5110	Unit Off	Inactive Event					event16	read-only		Unit was turned off.
+1.2.100.5111	Unit Standby	Inactive Event					event16	read-only		Unit was placed in standby mode.
+1.2.100.5112	Unit Partial Shutdown	Inactive Event					event16	read-only		An event has occurred requiring some system components to be shutdown and disabled.
+1.2.100.5113	Unit Shutdown	Inactive Event					event16	read-only		An event has occurred requiring the unit to be shutdown and disabled to prevent damage to the system.
+1.2.100.5114	Water Leakage Detector Sensor Issue	Inactive Event					event16	read-only		The water leakage detector sensor is disconnected or the signal is out of range.
+1.2.100.5115	BMS Communications Timeout	Inactive Event					event16	read-only		Building Management System (or external monitoring system) has not communicated with the system within the expected timeframe.
+1.2.100.5116	Maintenance Due	Inactive Event					event16	read-only		The calculated maintenance date has been reached.
+1.2.100.5117	Maintenance Completed	Inactive Event					event16	read-only		Maintenance has been completed on the unit.
+1.2.100.5118	Clogged Air Filter	Inactive Event					event16	read-only		Air filter is dirty and needs to be (cleaned or) replaced.
+1.2.100.5119	RAM Battery Issue	Inactive Event					event16	read-only		RAM or RAM backup battery is not operating correctly.
+1.2.100.5120	Master Unit Communication Lost	Inactive Event					event16	read-only		Communication with master unit has been lost.
+1.2.100.5121	High Power Shutdown	Inactive Event					event16	read-only		Supply to high power components has been shutdown.
+1.2.100.5146	Compressor 1 Pump Down Issue	Inactive Event					event16	read-only		Unable to pump down suction-side pressure during compressor 1 shutdown.
+1.2.100.5147	Return Air Sensor Issue	Inactive Event					event16	read-only		The air sensor at the inlet of the unit is disconnected or the signal is out of range.
+1.2.100.5148	Compressor 1 High Pressure Transducer Issue	Inactive Event					event16	read-only		Compressor 1 high pressure transducer is disconnected or the signal is out of range.
+1.2.100.5418	Unit Code Missing	Inactive Event					event16	read-only		Unit code has not been entered and saved.
+1.2.100.5513	Compressor Capacity Reduced	Inactive Event					event16	read-only		Compressor capacity has been reduced.
+1.2.100.5588	Unspecified General Event	Inactive Event					event16	read-only		One or more unspecified events active. See local unit display for further details.
+1.2.100.5629	Static Pressure Sensor Issue	Inactive Event					event16	read-only		The static pressure sensor is disconnected or the signal is out of range.
+1.2.100.5910	Static Pressure Sensor Out of Range	Inactive Event					event16	read-only		Static pressure sensor signal is out of its configured range.
+1.2.100.5911	Fluid Temperature Sensor Issue	Inactive Event					event16	read-only		The fluid temperature sensor is disconnected or the signal is out of range.
+1.2.100.5912	Fluid Flow Sensor Issue	Inactive Event					event16	read-only		The fluid flow sensor is disconnected or the signal is out of range.
+1.2.100.6105	External Condenser TVSS Issue	Inactive Event					event16	read-only		The condenser Transient Voltage Surge Suppressor or Surge Protection Device has failed, as indicated by an external input signal.
+1.2.100.6232	SEC Unspecified General Event	Inactive Event					event16	read-only		One or more unspecified events active for the Superheat and Envelope Controller.  See local unit display for further details.
+1.2.100.6233	SEC Communication Lost	Inactive Event					event16	read-only		Communication with the Superheat and Envelope Controller has been lost.  The event is deactivated when communication is re-established.
+1.2.100.6236	Power Source 'A' Issue	Inactive Event					event16	read-only		No power is detected at power source input 'A'.
+1.2.100.6237	Power Source 'B' Issue	Inactive Event					event16	read-only		No power is detected at power source input 'B'.
+1.3.20.1.4123	System Status	Normal Operation			1		enum	read-only		The operating status for the system
+1.3.20.1.4240	System Model Number	Sensor					text	read-only		System model identifier
+1.3.20.1.4553	Server Class	MONITOR			5		enum	read-only		The general classification for this system
+1.3.20.1.6109	Sensor Order Identifier - Slot 01						text	read-write		Sensor serial number of the sensor intended for slot 1.
+1.3.20.1.6110	Sensor Order Identifier - Slot 02						text	read-write		Sensor serial number of the sensor intended for slot 2.
+1.3.20.1.6111	Sensor Order Identifier - Slot 03						text	read-write		Sensor serial number of the sensor intended for slot 3.
+1.3.20.1.6112	Sensor Order Identifier - Slot 04						text	read-write		Sensor serial number of the sensor intended for slot 4.
+1.3.20.1.6113	Sensor Order Identifier - Slot 05						text	read-write		Sensor serial number of the sensor intended for slot 5.
+1.3.20.1.6114	Sensor Order Identifier - Slot 06						text	read-write		Sensor serial number of the sensor intended for slot 6.
+1.3.20.1.6115	Sensor Order Identifier - Slot 07						text	read-write		Sensor serial number of the sensor intended for slot 7.
+1.3.20.1.6116	Sensor Order Identifier - Slot 08						text	read-write		Sensor serial number of the sensor intended for slot 8.
+1.3.20.1.6117	Sensor Order Identifier - Slot 09						text	read-write		Sensor serial number of the sensor intended for slot 9.
+1.3.20.1.6118	Sensor Order Identifier - Slot 10						text	read-write		Sensor serial number of the sensor intended for slot 10.
+1.3.20.100.5423	Too Many Sensors	Inactive Event					event16	read-only		The number of sensors connected to the PDU exceeds the allowable limit
+1.3.20.100.6119	Slots not available	Inactive Event					event16	read-only		The number of sensors exceeds the number of allocated slots and cannot be displayed.

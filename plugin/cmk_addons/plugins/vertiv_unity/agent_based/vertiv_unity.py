@@ -19,7 +19,7 @@ Index layout (verified on CRV300 FW 6.5.0 and CRC/CRV602 FW 8.4.7):
 
 from collections import Counter
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from cmk.agent_based.v2 import (
     all_of,
@@ -39,7 +39,9 @@ from cmk.agent_based.v2 import (
     StringTable,
 )
 
-_FLEX = ".1.3.6.1.4.1.476.1.42.3.9"
+from cmk_addons.plugins.vertiv_unity.lib.constants import ACCESS_NAMES, FLEX_BASE, TYPE_NAMES
+
+_FLEX = FLEX_BASE
 
 DETECT_VERTIV_UNITY = all_of(
     startswith(".1.3.6.1.2.1.1.2.0", ".1.3.6.1.4.1.476.1.42"),
@@ -50,12 +52,7 @@ DETECT_VERTIV_UNITY = all_of(
 T_INT16, T_UINT16, T_INT32, T_UINT32, T_TEXT, T_ENUM, T_EVENT16, T_EVENT32, T_IPV4, T_TIME32 = range(1, 11)
 NUMERIC_TYPES = frozenset({T_INT16, T_UINT16, T_INT32, T_UINT32})
 SIGNED_TYPES = frozenset({T_INT16, T_INT32})
-TYPE_NAMES = {
-    0: "not specified", 1: "int16", 2: "uint16", 3: "int32", 4: "uint32", 5: "text",
-    6: "enum", 7: "event16", 8: "event32", 9: "ipv4", 10: "time32",
-}
 ACCESS_READWRITE = 3
-ACCESS_NAMES = {0: "not specified", 1: "read-only", 2: "write-only", 3: "read-write"}
 
 # Raw values the agent uses for "no data" (string column shows "Unavailable")
 _RAW_UNAVAILABLE = frozenset({2147483647, 4294967295})
@@ -70,6 +67,11 @@ _PLAUSIBLE_RANGE: Mapping[int, tuple[float, float]] = {
 
 _EVENT_CONTROL_SUFFIX = " - event control"
 _EVENT_TYPE_SUFFIX = " - event type"
+
+# Shared value maps (used by more than one data point)
+_ON_OFF: Mapping[str, State] = {"on": State.OK, "off": State.CRIT}
+_INTERNAL_EXTERNAL: Mapping[str, State] = {"internal (auto)": State.OK, "external (manual)": State.WARN}
+_ATS_STATUS: Mapping[str, State] = {"ok": State.OK, "not ok": State.CRIT}
 
 # Default state maps for enum data points: data ID -> {value text (lower case): state}
 DEFAULT_STATE_MAPS: Mapping[int, Mapping[str, State]] = {
@@ -89,12 +91,12 @@ DEFAULT_STATE_MAPS: Mapping[int, Mapping[str, State]] = {
         "lockout": State.CRIT,
     },
     4706: {"on": State.OK, "standby": State.OK, "off": State.CRIT},  # Unit Operating State
-    5143: {"on": State.OK, "off": State.CRIT},  # System On/Off Control
+    5143: _ON_OFF,  # System On/Off Control
     5672: {"power supply 1": State.OK, "power supply 2": State.WARN},  # ATS active supply
-    4707: {"internal (auto)": State.OK, "external (manual)": State.WARN},  # Unit Control Mode
-    5047: {"internal (auto)": State.OK, "external (manual)": State.WARN},  # Fan Control Mode (FW 6.5)
-    5673: {"ok": State.OK, "not ok": State.CRIT},  # ATS Power Supply 1 Status
-    5674: {"ok": State.OK, "not ok": State.CRIT},  # ATS Power Supply 2 Status
+    4707: _INTERNAL_EXTERNAL,  # Unit Control Mode
+    5047: _INTERNAL_EXTERNAL,  # Fan Control Mode (FW 6.5)
+    5673: _ATS_STATUS,  # ATS Power Supply 1 Status
+    5674: _ATS_STATUS,  # ATS Power Supply 2 Status
 }
 
 # unit enum -> (metric name, unit suffix shown, factor, offset); value_shown = raw_value * factor + offset
@@ -202,7 +204,7 @@ DEFAULT_EVENT_STATES: Mapping[int, State] = {
     **dict.fromkeys((5109, 5110, 5111, 5117), State.OK),  # Unit On/Off/Standby, Maintenance Completed
 }
 
-# Cross checks (P3/P5): thresholds
+# Cross checks (proposals P3/P5): thresholds
 _FAN_STOPPED_PERCENT = 0.0
 _NO_FLOW = {4155: 0.05, 4158: 1.0}  # unit enum -> flow considered "no flow" (m3/h, l/min)
 _VALVE_OPEN_PERCENT = 20.0
@@ -377,7 +379,7 @@ def _assign_items(points: list[DataPoint]) -> dict[str, DataPoint]:
         name = names[p.key]
         if name in clashes or not name.strip():
             name = f"{name.strip() or 'Data point'} ({p.key})"
-        result[name] = DataPoint(**{**p.__dict__, "item": name})
+        result[name] = replace(p, item=name)
     return result
 
 
@@ -522,14 +524,18 @@ DISCOVERY_DEFAULTS: Mapping[str, object] = {
 }
 
 
-def _excluded(params: Mapping[str, object], point: DataPoint) -> bool:
-    excluded = {str(x).strip() for x in params.get("exclude_ids", ()) or ()}  # type: ignore[union-attr]
+def _excluded_ids(params: Mapping[str, object]) -> frozenset[str]:
+    return frozenset(str(x).strip() for x in params.get("exclude_ids", ()) or ())  # type: ignore[union-attr]
+
+
+def _excluded(excluded: frozenset[str], point: DataPoint) -> bool:
     return str(point.data_id) in excluded or point.key in excluded
 
 
 def discover_vertiv_unity_value(params: Mapping[str, object], section: Section) -> DiscoveryResult:
+    excluded = _excluded_ids(params)
     for item, point in section.data_points.items():
-        if not point.is_numeric or point.invalid_reason() or _excluded(params, point):
+        if not point.is_numeric or point.invalid_reason() or _excluded(excluded, point):
             continue
         if point.is_writable and not params.get("include_settings", True):
             continue
@@ -540,10 +546,11 @@ def discover_vertiv_unity_value(params: Mapping[str, object], section: Section) 
 
 
 def discover_vertiv_unity_state(params: Mapping[str, object], section: Section) -> DiscoveryResult:
+    excluded = _excluded_ids(params)
     for item, point in section.data_points.items():
         if not point.is_enum or point.is_event_config:
             continue
-        if point.invalid_reason() or _excluded(params, point):
+        if point.invalid_reason() or _excluded(excluded, point):
             continue
         if point.is_writable and not params.get("include_modes", True):
             continue
@@ -553,8 +560,9 @@ def discover_vertiv_unity_state(params: Mapping[str, object], section: Section) 
 def discover_vertiv_unity_text(params: Mapping[str, object], section: Section) -> DiscoveryResult:
     if not params.get("include_text", True):
         return
+    excluded = _excluded_ids(params)
     for item, point in section.data_points.items():
-        if point.is_text and not point.invalid_reason() and not _excluded(params, point):
+        if point.is_text and not point.invalid_reason() and not _excluded(excluded, point):
             yield Service(item=item)
 
 
@@ -645,16 +653,10 @@ def check_vertiv_unity_value(item: str, params: Mapping[str, object], section: S
             ),
         )
     discovered = params.get("discovered_value")
-    change_state = _change_state(point, params)
-    if (
-        change_state is not State.OK
-        and isinstance(discovered, (int, float))
-        and abs(discovered - point.value) > 1e-9
-    ):
-        yield Result(
-            state=change_state,
-            summary=f"Changed since discovery (was {_render(point.decimals, point.units)(discovered)})",
-        )
+    if isinstance(discovered, (int, float)) and abs(discovered - point.value) > 1e-9:
+        was = _render(point.decimals, point.units)(discovered)
+        if (result := _changed_result(point, params, was)) is not None:
+            yield result
     yield Result(state=State.OK, notice=point.details())
 
 
@@ -663,6 +665,14 @@ def _change_state(point: DataPoint, params: Mapping[str, object]) -> State:
     if "change_state" in params:
         return State(int(params["change_state"]))  # type: ignore[call-overload]
     return State.WARN if point.data_id in CHANGE_ALERT_IDS else State.OK
+
+
+def _changed_result(point: DataPoint, params: Mapping[str, object], was: str) -> Result | None:
+    """Result for a value that differs from the discovered one; None when the state is OK."""
+    state = _change_state(point, params)
+    if state is State.OK:
+        return None
+    return Result(state=state, summary=f"Changed since discovery (was {was})")
 
 
 def _cross_checks(point: DataPoint, value: float, section: Section) -> CheckResult:
@@ -686,7 +696,7 @@ def _state_for(point: DataPoint, params: Mapping[str, object], section: Section)
     for entry in params.get("state_map", ()) or ():  # type: ignore[union-attr]
         if str(entry.get("value", "")).strip().lower() == text:
             return State(int(entry.get("state", 0))), ""
-    if point.data_id == 5382 and text == "off":  # Cooling State (P10)
+    if point.data_id == 5382 and text == "off":  # Cooling State (proposal P10)
         if section.unit_running():
             return State.WARN, "cooling off while the unit is running"
         return State.OK, ""
@@ -703,13 +713,9 @@ def check_vertiv_unity_state(item: str, params: Mapping[str, object], section: S
     state, reason = _state_for(point, params, section)
     yield Result(state=state, summary=f"{point.text.strip()}{code}{f' – {reason}' if reason else ''}")
     discovered = params.get("discovered_value")
-    change_state = _change_state(point, params)
-    if (
-        change_state is not State.OK
-        and isinstance(discovered, str)
-        and discovered.lower() != point.text.strip().lower()
-    ):
-        yield Result(state=change_state, summary=f"Changed since discovery (was {discovered})")
+    if isinstance(discovered, str) and discovered.lower() != point.text.strip().lower():
+        if (result := _changed_result(point, params, discovered)) is not None:
+            yield result
     yield Result(state=State.OK, notice=point.details())
 
 
@@ -732,8 +738,12 @@ def _event_state(event: Event, params: Mapping[str, object], section: Section) -
     for rule in params.get("event_states", ()) or ():  # type: ignore[union-attr]
         code = str(rule.get("code", "")).strip()
         if code in (str(event.code), event.key):
-            choice = str(rule.get("state", "warn"))
-            return _RULE_STATES.get(choice), "rule"
+            choice = str(rule.get("state", "warn")).strip().lower()
+            if choice == "ignore":
+                return None, "rule"
+            if choice in _RULE_STATES:
+                return _RULE_STATES[choice], "rule"
+            break
     config = section.event_config.get(event.label.lower(), EventConfig())
     if config.enabled is False:
         return None, "disabled on unit"
